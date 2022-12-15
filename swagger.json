@@ -5,6 +5,1472 @@
     "version": "v1"
   },
   "paths": {
+    "/api/opportunity": {
+      "get": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Get all opportunity tables",
+        "parameters": [
+          {
+            "name": "ERPSyncPending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "MasterCRMSyncPending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "LeadIdIsNull",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "UserIdIsNull",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "ReadyDependency",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "LeadMasterCRMReferenceKeyIsNotNull",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "CustomerMasterCRMReferenceKeyIsNotNull",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "IntegrationError",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDtoIListDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDtoIListDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDtoIListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Create or update a opportunity table",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "Indicate ERP Process",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate ERP Process",
+              "nullable": true
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Opportunity table to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/{id}": {
+      "get": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Get opportunity table",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Opportunity table id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opportunity table id",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Expand",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Update a opportunity table",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Opportunity table id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opportunity table id",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Opportunity table content to update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/updatecustomfields/{erpReferenceKey}": {
+      "put": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Update all custom fields of Opportunity",
+        "parameters": [
+          {
+            "name": "erpReferenceKey",
+            "in": "path",
+            "description": "Opportunity id ERP",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opportunity id ERP",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Opportunity content to update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/getOpportunitybyErpReferenceKey/{erpReferenceKey}": {
+      "get": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Get Opportunity By ErpReferenceKey",
+        "parameters": [
+          {
+            "name": "erpReferenceKey",
+            "in": "path",
+            "description": "Opportunity erpReferenceKey",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opportunity erpReferenceKey",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/getOpportunitybyMasterCRMReferenceKey/{masterCRMReferenceKey}": {
+      "get": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Get Opportunity By masterCRMReferenceKey",
+        "parameters": [
+          {
+            "name": "masterCRMReferenceKey",
+            "in": "path",
+            "description": "Opportunity masterCRMReferenceKey",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Opportunity masterCRMReferenceKey",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/inactive": {
+      "put": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Inactive Opportunity",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean",
+              "description": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportynityInactivatedDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportynityInactivatedDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportynityInactivatedDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportynityInactivatedDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunity/integrationerror/{id}": {
+      "put": {
+        "tags": [
+          "Opportunity"
+        ],
+        "summary": "Update Opportunity Error",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Registry Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Registry Id",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Invoice error content to update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Invoice error content to update",
+                "nullable": true
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Invoice error content to update",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Invoice error content to update",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "Invoice error content to update",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunitybulk": {
+      "post": {
+        "tags": [
+          "OpportunityBulk"
+        ],
+        "summary": "Create or update bulk opportunity",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "Indicate ERP process",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate ERP process"
+            }
+          },
+          {
+            "name": "hasNext",
+            "in": "query",
+            "description": "Indicate has next",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate has next"
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "List of opportunities to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityStandardMessageDto"
+                },
+                "description": "List of opportunities to create or update",
+                "nullable": true
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityStandardMessageDto"
+                },
+                "description": "List of opportunities to create or update",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityStandardMessageDto"
+                },
+                "description": "List of opportunities to create or update",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityStandardMessageDto"
+                },
+                "description": "List of opportunities to create or update",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunitybulk/deadlettertry": {
+      "post": {
+        "tags": [
+          "OpportunityBulk"
+        ],
+        "parameters": [
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityitem": {
+      "get": {
+        "tags": [
+          "OpportunityItem"
+        ],
+        "summary": "Get all opportunityItem tables",
+        "parameters": [
+          {
+            "name": "ERPSyncPending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "MasterCRMSyncPending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "MasterCRMReadyDependency",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "OpportunityMasterCRMReferenceKeyIsNull",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDtoIListDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDtoIListDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDtoIListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OpportunityItem"
+        ],
+        "summary": "Create or update a opportunityItem table",
+        "parameters": [
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "OpportunityItem table to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityitem/{id}": {
+      "get": {
+        "tags": [
+          "OpportunityItem"
+        ],
+        "summary": "Get opportunityItem table",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "OpportunityItem table id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "OpportunityItem table id",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Expand",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "OpportunityItem"
+        ],
+        "summary": "Update a opportunityItem table",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "OpportunityItem table id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "OpportunityItem table id",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "OpportunityItem table content to update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityItemDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityitem/inactive": {
+      "put": {
+        "tags": [
+          "OpportunityItem"
+        ],
+        "summary": "Inactive Opportunity Item",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "",
+            "schema": {
+              "type": "boolean",
+              "description": ""
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemInactivatedDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemInactivatedDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemInactivatedDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityItemInactivatedDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/opportunitystandard": {
       "get": {
         "tags": [
@@ -424,7 +1890,7 @@
         "tags": [
           "OpportunityStandard"
         ],
-        "summary": "Create or update a opportunity standard with items",
+        "summary": "Create or update a opportunity standard with items.",
         "parameters": [
           {
             "name": "isERPProcess",
@@ -1031,6 +2497,81 @@
                   "items": {
                     "$ref": "#/components/schemas/BulkResponseItemDto"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunitystandardeai": {
+      "post": {
+        "tags": [
+          "OpportunityStandardEAI"
+        ],
+        "summary": "Create or update an EAI opportunity table and items.",
+        "requestBody": {
+          "description": "OpportunityStandard table to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityStandardEAIDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityStandardEAIDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityStandardEAIDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityStandardEAIDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityStandardDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityStandardDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityStandardDto"
                 }
               }
             }
@@ -1669,6 +3210,569 @@
       "post": {
         "tags": [
           "OpportunityStandardItemBulk"
+        ],
+        "parameters": [
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BulkResponseItemDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityWinLossReason": {
+      "get": {
+        "tags": [
+          "OpportunityWinLossReason"
+        ],
+        "summary": "Get all opportunityWinLossReason",
+        "parameters": [
+          {
+            "name": "MasterCRMSyncPending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "IntegrationError",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Order",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDtoIListDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDtoIListDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDtoIListDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "OpportunityWinLossReason"
+        ],
+        "summary": "Create or update a opportunityWinLossReason",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "Indicate ERP Process EAI",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate ERP Process EAI"
+            }
+          },
+          {
+            "name": "isTOTVSEAI",
+            "in": "query",
+            "description": "Indicate TOTVS EAI",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate TOTVS EAI"
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "OpportunityWinLossReason to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityWinLossReason/{id}": {
+      "get": {
+        "tags": [
+          "OpportunityWinLossReason"
+        ],
+        "summary": "Get opportunityWinLossReason",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "OpportunityWinLossReason id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "OpportunityWinLossReason id",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Fields",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "Expand",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityWinLossReason/integrationerror/{id}": {
+      "put": {
+        "tags": [
+          "OpportunityWinLossReason"
+        ],
+        "summary": "Update WinLossReason Error",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Registry Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Registry Id",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "WinLossReason content to update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "WinLossReason content to update",
+                "nullable": true
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "WinLossReason content to update",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "WinLossReason content to update",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "WinLossReason content to update",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityWinLossReasonbulk": {
+      "post": {
+        "tags": [
+          "OpportunityWinLossReasonBulk"
+        ],
+        "summary": "Create or update bulk opportunityWinLossReason",
+        "parameters": [
+          {
+            "name": "isERPProcess",
+            "in": "query",
+            "description": "Indicate ERP Process EAI",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate ERP Process EAI"
+            }
+          },
+          {
+            "name": "hasNext",
+            "in": "query",
+            "description": "Indicate has next",
+            "schema": {
+              "type": "boolean",
+              "description": "Indicate has next"
+            }
+          },
+          {
+            "name": "messageUniqueId",
+            "in": "query",
+            "description": "Message Id from external system",
+            "schema": {
+              "type": "string",
+              "description": "Message Id from external system",
+              "nullable": true
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "List of cities to create or update",
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonStandardMessageDto"
+                },
+                "description": "List of cities to create or update",
+                "nullable": true
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonStandardMessageDto"
+                },
+                "description": "List of cities to create or update",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonStandardMessageDto"
+                },
+                "description": "List of cities to create or update",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/OpportunityWinLossReasonStandardMessageDto"
+                },
+                "description": "List of cities to create or update",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/opportunityWinLossReasonbulk/deadlettertry": {
+      "post": {
+        "tags": [
+          "OpportunityWinLossReasonBulk"
         ],
         "parameters": [
           {
@@ -5774,6 +7878,9 @@
           "sharedPaymentCondition": {
             "type": "boolean"
           },
+          "userHasOnlyOneCompany": {
+            "type": "boolean"
+          },
           "expandables": {
             "type": "array",
             "items": {
@@ -6757,6 +8864,9 @@
             "nullable": true
           },
           "sharedPaymentCondition": {
+            "type": "boolean"
+          },
+          "userHasOnlyOneCompany": {
             "type": "boolean"
           },
           "syncControl": {
@@ -15414,6 +17524,296 @@
           },
           "branchId": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpportunityStandardItemInfo": {
+        "type": "object",
+        "properties": {
+          "erpReferenceKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "erpCreateDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "erpLastChange": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "discountPercentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "opportunityId": {
+            "type": "string",
+            "nullable": true
+          },
+          "productId": {
+            "type": "string",
+            "nullable": true
+          },
+          "recurrenceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sellingPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "repetitionsQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "basePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "itemType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpportunityTeamMemberInfo": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleId": {
+            "type": "string",
+            "nullable": true
+          },
+          "responsible": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "percentageOfParticipation": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpportunityStandardEAIDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastChange": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "erpReferenceKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "erpCreateDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "erpLastChange": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "erpSyncPending": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "masterCRMReferenceKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "masterCRMCreateDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "masterCRMLastChange": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "masterCRMSyncPending": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "opportunityTypeId": {
+            "type": "string",
+            "nullable": true
+          },
+          "winLossReasonId": {
+            "type": "string",
+            "nullable": true
+          },
+          "winLossNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "pipelineId": {
+            "type": "string",
+            "nullable": true
+          },
+          "stageId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "currencyId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountType": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "leadId": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "probabilityPercentage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalSingleValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalRecurrentValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "inconsistencyNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "discardedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "recoverNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "discardedNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "extendNote": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "totalExchangeConvertedValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "nullable": true
+          },
+          "opportunityStandardItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpportunityStandardItemInfo"
+            },
+            "nullable": true
+          },
+          "teamMembers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpportunityTeamMemberInfo"
+            },
+            "nullable": true
+          },
+          "expandables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           }
         },
