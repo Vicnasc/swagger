@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "APIs públicas na plataforma TOTVS. Módulo Datasul CEP",
+    "description": "APIs públicas na plataforma TOTVS. Módulo Datasul FTP",
     "version": "1.0.0",
-    "title": "TOTVS - CEP",
+    "title": "TOTVS - FTP",
     "termsOfService": "https://www.totvs.com/termos-de-uso/",
     "contact": {
       "email": "box@totvs.com.br"
@@ -14,50 +14,54 @@
     }
   },
   "host": "gales:8180",
-  "basePath": "/dts/datasul-rest/resources/prg/cep/v1/",
+  "basePath": "/dts/datasul-rest/resources/prg/ftp/v1/",
   "schemes": [
     "http",
     "https"
   ],
   "tags": [
     {
-      "name": "inventoryGroupsPublic",
-      "description": "Grupo de Estoque"
+      "name": "invoicePublic",
+      "description": "Este serviço permite a sincronização das Notas Fiscais."
     },
     {
-      "name": "materialFamiliesPublic",
-      "description": "Família de Material"
+      "name": "returnInvoicePublic",
+      "description": "Este serviço permite sincronização das Notas Fiscais de Devolução."
     },
     {
-      "name": "productPublic",
-      "description": "Item"
-    },
-    {
-      "name": "productSkuPublic",
-      "description": "Item SKU"
-    },
-    {
-      "name": "stockBalancePublic",
-      "description": "Saldo Estoque"
-    },
-    {
-      "name": "warehousePublic",
-      "description": "Depósitos"
+      "name": "itemTaxSimulationPublic",
+      "description": "Este serviço permite retornar a simulação do cálculo dos tributos de uma nota fiscal com base em alguns parâmetros passados na integração."
     }
   ],
   "paths": {
-    "/inventoryGroupsPublic": {
+    "/invoicePublic": {
       "get": {
         "tags": [
-          "inventoryGroupsPublic"
+          "invoicePublic"
         ],
-        "summary": "Realiza a carga de Grupos de Estoque.",
-        "description": "Este serviço permite a visualização dos Grupos de Estoque.",
-        "operationId": "getinventoryGroupsPublic",
+        "summary": "Realiza a carga das Notas Fiscais.",
+        "description": "Este serviço permite a visualização das Notas Fiscais. \r\n`Campos Indexados:` {siteID, series, invoiceNumber, transactionTypeID, printDate, confirmationDate, customerID, customerOrderNumber, customerShortName, cancellationDate, paymentTerms, invoiceStatus, shipmentNumber, billGenerationDate, billNumber, routeID, carrierName, reshipmentCarrierName, collectorID, collectingModality, eletronicInvoiceStatus, financialTable, mainRepresentativeName, priceTableID}",
+        "operationId": "getinvoicePublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
+          {
+            "name": "printDateFirst",
+            "in": "query",
+            "description": "Data inicial da emissão da nota",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "printDateLast",
+            "in": "query",
+            "description": "Data final da emissão da nota",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          },
           {
             "name": "page",
             "in": "query",
@@ -84,7 +88,7 @@
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/inventoryGroupsPublicResponse"
+              "$ref": "#/definitions/invoicePublicResponse"
             }
           },
           "400": {
@@ -107,14 +111,14 @@
         ]
       }
     },
-    "/productPublic": {
+    "/invoicePublic/ecommerce": {
       "get": {
         "tags": [
-          "productPublic"
+          "ecommerce"
         ],
-        "summary": "Realiza a carga dos Itens.",
-        "description": "Este serviço permite a visualização dos Itens. \r\n`Campos Indexados:` {taxClassification, auxiliaryCode, siteCode, obsolete, serviceCode, businessUnit, productDescription, businessFamily, familyCode, inventoryGroup, productCode, controlType, measureUnit}",
-        "operationId": "getproductPublic",
+        "summary": "Realiza a carga das notas fiscais autorizadas pela Sefaz e que foram geradas por pedidos de venda criados pelo e-commerce.",
+        "description": "Este serviço permite a visualização notas fiscais autorizadas pela Sefaz e que foram geradas por pedidos de venda criados pelo e-commerce.",
+        "operationId": "getinvoicePublic/ecommerce",
         "produces": [
           "application/json"
         ],
@@ -125,7 +129,7 @@
             "description": "Data de sincronização dos registros",
             "required": false,
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           {
             "name": "page",
@@ -153,7 +157,7 @@
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/productPublicResponse"
+              "$ref": "#/definitions/invoicePublicEcommerceResponse"
             }
           },
           "400": {
@@ -176,94 +180,33 @@
         ]
       }
     },
-    "/productPublic/ecommerce": {
+    "/returnInvoicePublic": {
       "get": {
         "tags": [
-          "productPublic"
+          "returnInvoicePublic"
         ],
-        "summary": "Realiza a carga dos itens pertecentes a integração com a VTEX",
-        "description": "Este serviço permite a visualização dos itens VTEX.",
-        "operationId": "getProductStorePublic",
+        "summary": "Realiza a carga das Notas Fiscais de Devolução.",
+        "description": "Este serviço permite a visualização das Notas Fiscais de Devolução. \r\n`Campos Indexados:` {customerCode, siteCode, returnCode, returnDate, productCode, transactionType, shortName, invoiceNumber, invoiceSeq, returnInvoiceNumber, returnInoiceSeq, invoiceSeries, returnInvoiceSeries}",
+        "operationId": "getreturnInvoicePublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "lastUpdate",
+            "name": "returnDateFirst",
             "in": "query",
-            "description": "Data de sincronização dos registros",
+            "description": "Data inicial da devolução do item",
             "required": false,
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           {
-            "name": "page",
+            "name": "returnDateLast",
             "in": "query",
-            "description": "Número da página",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "totalCount",
-            "in": "query",
-            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/productStorePublicResponse"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/productSkuPublic/ecommerce": {
-      "get": {
-        "tags": [
-          "productSkuPublic"
-        ],
-        "summary": "Realiza a carga dos SKU pertecentes a integração com a VTEX",
-        "description": "Este serviço permite a visualização dos SKU VTEX.",
-        "operationId": "getProductSkuStorePublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "lastUpdate",
-            "in": "query",
-            "description": "Data de sincronização dos registros",
+            "description": "Data final da devolução do item",
             "required": false,
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           {
             "name": "page",
@@ -291,7 +234,7 @@
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/productSkuStorePublicResponse"
+              "$ref": "#/definitions/returnInvoicePublicResponse"
             }
           },
           "400": {
@@ -314,244 +257,88 @@
         ]
       }
     },
-    "/stockBalancePublic": {
-      "get": {
+    "/itemTaxSimulationPublic": {
+      "post": {
         "tags": [
-          "stockBalancePublic"
+          "itemTaxSimulationPublic"
         ],
-        "summary": "Realiza a carga dos Saldos de Estoque.",
-        "description": "Este serviço permite a visualização dos Saldos de Estoque. \r\n`Campos Indexados:` {warehouseCode, siteCode, locationCode, referenceCode, expirationDate, itemCode, lot}",
-        "operationId": "getstockBalancePublic",
+        "summary": "Realiza a carga dos itens a serem simulados os tributos.",
+        "description": "Este serviço permite a visualização dos itens a serem simulados o cálculo dos tributos. \r\n`Campos Indexados:` {siteCode, customerCode, itemCode, transactionType, itemRefer, unitOfMeasure, quantity, negotiatedPrice, percentDiscount}",
+        "operationId": "getitemTaxSimulationPublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "lastMovto",
+            "name": "siteCode",
             "in": "query",
-            "description": "Data de movimentação de estoque",
-            "required": false,
+            "description": "Código do Estabelecimento",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "customerCode",
+            "in": "query",
+            "description": "Código do Emitente",
+            "required": true,
             "type": "string",
-            "format": "date-time"
+            "format": "integer"
           },
           {
-            "name": "page",
+            "name": "itemCode",
             "in": "query",
-            "description": "Número da página",
+            "description": "Código do Item",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "transactionType",
+            "in": "query",
+            "description": "Natureza de Operação",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "itemRefer",
+            "in": "query",
+            "description": "Referência do Item",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "unitOfMeasure",
+            "in": "query",
+            "description": "Item Cliente",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "quantity",
+            "in": "query",
+            "description": "Quantidade do Item",
             "required": false,
             "type": "integer"
           },
           {
-            "name": "pageSize",
+            "name": "negotiatedPrice",
             "in": "query",
-            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "description": "Preço Negociado",
             "required": false,
             "type": "integer"
           },
           {
-            "name": "totalCount",
+            "name": "percentDiscount",
             "in": "query",
-            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "description": "Valor do Desconto",
             "required": false,
-            "type": "boolean"
+            "type": "integer"
           }
         ],
         "responses": {
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/stockBalancePublicResponse"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/stockBalancePublic/ecommerce": {
-      "get": {
-        "tags": [
-          "stockBalancePublic"
-        ],
-        "summary": "Realiza a carga do saldo em estoque dos itens pertecentes a integração com a VTEX",
-        "description": "Este serviço permite a visualização do saldo em estoque dos itens VTEX.",
-        "operationId": "getStockBalanceStorePublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "lastUpdate",
-            "in": "query",
-            "description": "Data de sincronização dos registros",
-            "required": false,
-            "type": "string",
-            "format": "date-time"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Número da página",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "totalCount",
-            "in": "query",
-            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/stockBalanceStorePublicResponse"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/materialFamiliesPublic": {
-      "get": {
-        "tags": [
-          "materialFamiliesPublic"
-        ],
-        "summary": "Realiza a carga das Famílias de Materiais.",
-        "description": "Este serviço permite a visualização das Famílias de Materiais.",
-        "operationId": "getmaterialFamiliesPublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Número da página",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "totalCount",
-            "in": "query",
-            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/materialFamiliesPublicResponse"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/warehousePublic": {
-      "get": {
-        "tags": [
-          "warehousePublic"
-        ],
-        "summary": "Realiza a carga da lista de Depósitos.",
-        "description": "Este serviço permite a visualização da lista de Depósitos.",
-        "operationId": "getwarehousePublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Número da página",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
-            "required": false,
-            "type": "integer"
-          },
-          {
-            "name": "totalCount",
-            "in": "query",
-            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/warehousePublicResponse"
+              "$ref": "#/definitions/itemTaxSimulationPublicResponse"
             }
           },
           "400": {
@@ -581,9 +368,9 @@
     }
   },
   "definitions": {
-    "inventoryGroupsPublicResponse": {
+    "invoicePublicResponse": {
       "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os Grupos de Estoque cadastrados no ERP",
+      "description": "Resposta da requisição do serviço que retorna as Notas Fiscais cadastrados no ERP",
       "properties": {
         "total": {
           "type": "integer",
@@ -593,685 +380,1259 @@
           "type": "boolean"
         },
         "items": {
-          "description": "Lista contendo informações dos Grupos de Estoque cadastrados no ERP",
+          "description": "Lista contendo informações das Notas Fiscais cadastradas no ERP",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/inventoryGroupsPublic"
+            "$ref": "#/definitions/invoicePublic"
           }
         }
       }
     },
-    "inventoryGroupsPublic": {
+    "invoicePublic": {
       "type": "object",
-      "description": "Grupo de Estoque",
+      "description": "Nota Fiscal",
       "properties": {
-        "code": {
-          "type": "number",
-          "example": "grup-estoque.ge-codigo",
-          "description": "Grupo de Estoque"
-        },
-        "description": {
+        "address": {
           "type": "string",
-          "example": "grup-estoque.descricao",
-          "description": "Descrição"
-        }
-      }
-    },
-    "stockBalancePublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os Saldos de Estoque do item cadastrados no ERP",
-      "properties": {
-        "total": {
-          "type": "integer",
-          "description": "Quantidade de registros"
+          "example": "nota-fiscal.endereco",
+          "description": "Endereço"
         },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações dos Saldos de Estoque do item cadastrados no ERP",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/stockBalancePublic"
-          }
-        }
-      }
-    },
-    "stockBalancePublic": {
-      "type": "object",
-      "description": "Estoque do item",
-      "properties": {
-        "expirationDate": {
+        "billGenerationDate": {
           "type": "string",
           "format": "date",
-          "example": "saldo-estoq.dt-vali-lote",
-          "description": "Validade Lote"
+          "example": "nota-fiscal.dt-atual-cr",
+          "description": "Data da atualização da nota no módulo de contas a receber"
         },
-        "itemCode": {
+        "billNumber": {
           "type": "string",
-          "example": "saldo-estoq.it-codigo",
-          "description": "Item"
+          "example": "nota-fiscal.nr-fatura",
+          "description": "Número da fatura"
         },
-        "lastCountDate": {
+        "billValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-fatura",
+          "description": "Valor da fatura"
+        },
+        "calculationUser": {
+          "type": "string",
+          "example": "nota-fiscal.user-calc",
+          "description": "Usuário que fez o calculo da nota"
+        },
+        "cancellationDate": {
           "type": "string",
           "format": "date",
-          "example": "saldo-estoq.dt-ul-contag",
-          "description": "Ultima Contagem"
+          "example": "nota-fiscal.dt-cancela",
+          "description": "Data de cancelamento da nota"
         },
-        "locationCode": {
+        "cancellationReason": {
           "type": "string",
-          "example": "saldo-estoq.cod-localiz",
-          "description": "Localização"
+          "example": "nota-fiscal.desc-cancela",
+          "description": "Descrição do motivo do cancelamento"
         },
-        "lot": {
+        "carrierName": {
           "type": "string",
-          "example": "saldo-estoq.lote",
-          "description": "Lote/Série"
+          "example": "nota-fiscal.nome-transp",
+          "description": "Nome do transportador"
         },
-        "manufacturingDate": {
+        "cidadeCIF": {
           "type": "string",
-          "format": "date",
-          "example": "saldo-estoq.dt-fabric",
-          "description": "Data de fabricação"
+          "example": "nota-fiscal.cidade-cif",
+          "description": "Até que cidade o frete corre por conta do emitente"
         },
-        "qtyAllocated": {
-          "type": "number",
-          "example": "saldo-estoq.qt-alocada",
-          "description": "Quantidade Alocada do item pela preparação do faturamento"
-        },
-        "qtyAllocOrder": {
-          "type": "number",
-          "example": "saldo-estoq.qt-aloc-ped",
-          "description": "Quantidade alocada do item no pedido"
-        },
-        "qtyAllocProd": {
-          "type": "number",
-          "example": "saldo-estoq.qt-aloc-prod",
-          "description": "Quantidade alocada do item na produção"
-        },
-        "qtyAvailBalance": {
-          "type": "number",
-          "example": "saldo-estoq.qtidade-atu",
-          "description": "Qtde Atual"
-        },
-        "referenceCode": {
+        "city": {
           "type": "string",
-          "example": "saldo-estoq.cod-refer",
-          "description": "Referência"
+          "example": "nota-fiscal.cidade",
+          "description": "Cidade"
         },
-        "siteCode": {
-          "type": "string",
-          "example": "saldo-estoq.cod-estabel",
-          "description": "Estabelecimento"
-        },
-        "warehouseCode": {
-          "type": "string",
-          "example": "saldo-estoq.cod-depos",
-          "description": "Depósito"
-        }
-      }
-    },
-    "stockBalanceStorePublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os saldos em estoque dos itens cadastrados no ERP pertencentes a integração VTEX",
-      "properties": {
-        "total": {
+        "collectingModality": {
           "type": "integer",
-          "description": "Quantidade de registros"
+          "example": "nota-fiscal.modalidade",
+          "description": "Modalidade de cobrança referente ao portador"
         },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações os saldos em estoque dos itens cadastrados no ERP pertencentes a integração VTEX",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/stockBalanceStorePublic"
-          }
-        }
-      }
-    },
-    "stockBalanceStorePublic": {
-      "type": "object",
-      "description": "Estoque do item",
-      "properties": {
-        "itemCode": {
-          "type": "string",
-          "example": "movind.saldo-estoq.it-codigo",
-          "description": "Chave ERP - Código do item + código da referência do item (ref-item.cod-refer) quando item possui referência - Exemplo iphone|branco. Quando o item não possuir referência é gravado apenas o código do item."
-        },
-        "quantity": {
-          "type": "number",
-          "description": "Saldo em estoque do item"
-        },
-        "referenceCode": {
-          "type": "string",
-          "example": "movind.saldo-estoq.cod-refer",
-          "description": "Referência"
-        },
-        "branchCode": {
-          "type": "string",
-          "example": "movind.saldo-estoq.cod-estabel",
-          "description": "Estabelecimento"
-        },
-        "warehouseCode": {
-          "type": "string",
-          "example": "movind.saldo-estoq.cod-depos",
-          "description": "Depósito"
-        },
-        "erpLastChange": {
-          "type": "string",
-          "format": "date-time",
-          "example": "movind.movto-estoq.dt-trans",
-          "description": "Data e hora da última alteração"
-        }
-      }
-    },
-    "productPublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os Itens cadastrados no ERP",
-      "properties": {
-        "total": {
+        "collectorID": {
           "type": "integer",
-          "description": "Quantidade de registros"
+          "example": "nota-fiscal.cod-portador",
+          "description": "Código do portador"
         },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações dos Itens cadastrados no ERP",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productPublic"
-          }
-        }
-      }
-    },
-    "productPublic": {
-      "type": "object",
-      "description": "Item",
-      "properties": {
-        "auxiliaryCode": {
+        "comercialInvoiceNumber": {
           "type": "string",
-          "example": "item.cod-auxiliar",
-          "description": "Código auxiliar de acesso. Exemplo: código senha."
-        },
-        "basePrice": {
-          "type": "number",
-          "example": "item.preco-base",
-          "description": "Preço Base"
-        },
-        "billable": {
-          "type": "boolean",
-          "example": "item.ind-item-fat",
-          "description": "Indica se o item pode ser faturado"
-        },
-        "businessFamily": {
-          "type": "string",
-          "example": "item.fm-cod-com",
-          "description": "Família comercial a qual pertence o item"
-        },
-        "businessUnit": {
-          "type": "string",
-          "example": "item.cod-unid-negoc",
-          "description": "Código da Unidade de Negócio"
+          "example": "nota-fiscal.nr-invoice",
+          "description": "Número da comercial invoice"
         },
         "comments": {
           "type": "string",
-          "example": "item.narrativa",
-          "description": "Narrativa"
+          "example": "nota-fiscal.observ-nota",
+          "description": "Observação"
         },
-        "complInformation": {
-          "type": "string",
-          "example": "item.inform-compl",
-          "description": "Inf Complementar"
-        },
-        "controlType": {
-          "type": "integer",
-          "example": "item.tipo-contr",
-          "description": "Tipo de controle do item"
-        },
-        "conversionFactor": {
+        "commissionValue": {
           "type": "number",
-          "example": "item.ft-conversao",
-          "description": "Fator de conversão para unidade de medida padrão da família"
+          "example": "nota-fiscal.vl-tot-com",
+          "description": "Valor da comissão"
         },
-        "deploymentDate": {
+        "confirmationDate": {
           "type": "string",
           "format": "date",
-          "example": "item.data-implant",
-          "description": "Data Implantação"
+          "example": "nota-fiscal.dt-confirma",
+          "description": "Data de confirmação da nota fiscal"
         },
-        "familyCode": {
+        "confirmationTime": {
           "type": "string",
-          "example": "item.fm-codigo",
-          "description": "Família de material a que pertence o item"
+          "example": "nota-fiscal.hr-confirma",
+          "description": "Hora da confirmação"
+        },
+        "country": {
+          "type": "string",
+          "example": "nota-fiscal.pais",
+          "description": "País"
+        },
+        "currency": {
+          "type": "string",
+          "example": "nota-fiscal.mo-codigo",
+          "description": "Código do modelo"
+        },
+        "customerID": {
+          "type": "integer",
+          "example": "nota-fiscal.cod-emitente",
+          "description": "Código do emitente"
+        },
+        "customerOrderNumber": {
+          "type": "string",
+          "example": "nota-fiscal.nr-pedcli",
+          "description": "Número do pedido do cliente"
+        },
+        "customerShortName": {
+          "type": "string",
+          "example": "nota-fiscal.nome-ab-cli",
+          "description": "Nome abreviado do cliente/fornecedor"
+        },
+        "deliveryDate": {
+          "type": "string",
+          "format": "date",
+          "example": "nota-fiscal.dt-entr-cli",
+          "description": "Data em que os materiais foram entregues ao cliente"
+        },
+        "deliveryID": {
+          "type": "string",
+          "example": "nota-fiscal.cod-entrega",
+          "description": "Código do endereço de entrega"
+        },
+        "deliveryTime": {
+          "type": "string",
+          "example": "nota-fiscal.hr-entr-cli",
+          "description": "Hora em que os materiais foram entregues ao cliente"
+        },
+        "discountAmount": {
+          "type": "number",
+          "example": "nota-fiscal.vl-desconto",
+          "description": "Valor do desconto"
+        },
+        "discountPercentage1": {
+          "type": "number",
+          "example": "nota-fiscal.perc-desco1",
+          "description": "Percentual de desconto do cliente a ser aplicado sobre a nota"
+        },
+        "discountPercentage2": {
+          "type": "number",
+          "example": "nota-fiscal.perc-desco2",
+          "description": "Segundo percentual de desconto sobre a nota"
+        },
+        "discountValue1": {
+          "type": "number",
+          "example": "nota-fiscal.descto1",
+          "description": "Valor do desconto 1"
+        },
+        "discountValue2": {
+          "type": "number",
+          "example": "nota-fiscal.descto2",
+          "description": "Valor do desconto 2"
+        },
+        "distributionChannelID": {
+          "type": "integer",
+          "example": "nota-fiscal.cod-canal-venda",
+          "description": "Código do canal de venda"
+        },
+        "district": {
+          "type": "string",
+          "example": "nota-fiscal.bairro",
+          "description": "Bairro"
+        },
+        "documentType": {
+          "type": "string",
+          "example": "nota-fiscal.esp-docto",
+          "description": "Espécie do documento"
+        },
+        "eletronicInvoiceAccessKey": {
+          "type": "string",
+          "example": "nota-fiscal.cod-chave-aces-nf-eletro",
+          "description": "Código Chave Acesso Nota fiscal Eletrônica"
+        },
+        "eletronicInvoiceEmissionType": {
+          "type": "string",
+          "example": "nota-fiscal.idi-forma-emis-nf-eletro",
+          "description": "Indica a Forma de Emissão da Nota Fiscal Eletrônica"
+        },
+        "eletronicInvoiceStatus": {
+          "type": "integer",
+          "example": "nota-fiscal.idi-sit-nf-eletro",
+          "description": "Indica a Situação da Nota fiscal Eletrônica"
+        },
+        "financialTable": {
+          "type": "integer",
+          "example": "nota-fiscal.nr-tab-finan",
+          "description": "Número da tabela de financiamento"
+        },
+        "financialTableIndexValue": {
+          "type": "number",
+          "example": "nota-fiscal.tab-ind-fin",
+          "description": "Índice de financiamento respectivo a cada prazo"
+        },
+        "freightType": {
+          "type": "integer",
+          "example": "nota-fiscal.ind-tp-frete",
+          "description": "Tipo de frete da nota fiscal."
+        },
+        "freightValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-frete",
+          "description": "Valor do frete"
+        },
+        "fullAddress": {
+          "type": "string",
+          "example": "nota-fiscal.endereco_text",
+          "description": "Endereço Completo"
+        },
+        "generateBill": {
+          "type": "boolean",
+          "example": "nota-fiscal.emite-duplic",
+          "description": "Haverá faturamento para as notas desta natureza?"
+        },
+        "goodsIssueDate": {
+          "type": "string",
+          "format": "date",
+          "example": "nota-fiscal.dt-saida",
+          "description": "Data de saída das mercadorias"
+        },
+        "goodsTarget": {
+          "type": "integer",
+          "example": "nota-fiscal.cod-des-merc",
+          "description": "Destino da mercadoria"
+        },
+        "infDiscountPercent": {
+          "type": "string",
+          "example": "nota-fiscal.des-pct-desconto-inform",
+          "description": "Percentuais de desconto informados por nota fiscal"
+        },
+        "insuranceValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-seguro",
+          "description": "Valor do Seguro"
+        },
+        "invoiceAmount": {
+          "type": "number",
+          "example": "nota-fiscal.vl-tot-nota",
+          "description": "Valor total da nota fiscal"
+        },
+        "invoiceCommissionAmount": {
+          "type": "number",
+          "example": "nota-fiscal.vl-comis-nota",
+          "description": "Valor da comissão da nota fiscal"
+        },
+        "invoicedGoodsValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-merc-tot-fat",
+          "description": "Valor total das mercadorias que geram faturamento"
+        },
+        "invoiceDiscount": {
+          "type": "number",
+          "example": "nota-fiscal.desc-valor-nota",
+          "description": "Desconto por valor concedido a nível de nota"
+        },
+        "invoicedItemsValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-tot-itens-fat",
+          "description": "Valor total dos itens faturados"
+        },
+        "invoiceExchangeRate": {
+          "type": "number",
+          "example": "nota-fiscal.vl-cotacao-fatur",
+          "description": "Valor da cotação do faturamento na moeda"
+        },
+        "invoiceNumber": {
+          "type": "string",
+          "example": "nota-fiscal.nr-nota-fis",
+          "description": "Número da nota fiscal"
+        },
+        "invoiceStatus": {
+          "type": "integer",
+          "example": "nota-fiscal.ind-sit-nota",
+          "description": "Situação da nota fiscal"
+        },
+        "invoiceType": {
+          "type": "integer",
+          "example": "nota-fiscal.ind-tip-nota",
+          "description": "Tipo da nota"
+        },
+        "invoicingType": {
+          "type": "integer",
+          "example": "nota-fiscal.tipo-fat",
+          "description": "Tipo de faturamento"
+        },
+        "representativeCode": {
+          "type": "integer",
+          "example": "nota-fiscal.cod-rep",
+          "description": "Código do representante"
+        },
+        "mainRepresentativeName": {
+          "type": "string",
+          "example": "nota-fiscal.no-ab-reppri",
+          "description": "Nome abreviado do representante"
+        },
+        "numberOfInstallments": {
+          "type": "integer",
+          "example": "nota-fiscal.nr-parcelas",
+          "description": "Número de parcelas"
+        },
+        "packageQuantity": {
+          "type": "string",
+          "example": "nota-fiscal.nr-volumes",
+          "description": "Número dos volumes"
+        },
+        "packingValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-embalagem",
+          "description": "Valor da embalagem"
+        },
+        "paymentTerms": {
+          "type": "integer",
+          "example": "nota-fiscal.cod-cond-pag",
+          "description": "Condição de pagamento da nota fiscal"
+        },
+        "priceTableDiscountPercentage": {
+          "type": "number",
+          "example": "nota-fiscal.val-pct-desconto-tab-preco",
+          "description": "Percentual de descontos referente à tabela de preços"
+        },
+        "priceTableID": {
+          "type": "string",
+          "example": "nota-fiscal.nr-tabpre",
+          "description": "Tabela de preços"
+        },
+        "priceType": {
+          "type": "integer",
+          "example": "nota-fiscal.tp-preco",
+          "description": "Tipo de preço"
+        },
+        "printDate": {
+          "type": "string",
+          "format": "date",
+          "example": "nota-fiscal.dt-emis-nota",
+          "description": "Data de emissão da nota fiscal"
+        },
+        "protocol": {
+          "type": "string",
+          "example": "nota-fiscal.cod-protoc",
+          "description": "Protocolo para identificar a NF-e no sistema do Sefaz"
+        },
+        "reshipmentCarrierName": {
+          "type": "string",
+          "example": "nota-fiscal.nome-tr-red",
+          "description": "Nome da transportadora de redespacho"
+        },
+        "routeID": {
+          "type": "string",
+          "example": "nota-fiscal.cod-rota",
+          "description": "Rota de atendimento a que esta nota pertence"
+        },
+        "series": {
+          "type": "string",
+          "example": "nota-fiscal.serie",
+          "description": "Série da nota fiscal"
+        },
+        "shipmentDate": {
+          "type": "string",
+          "format": "date",
+          "example": "nota-fiscal.dt-embarque",
+          "description": "Data de embarque da nota fiscal"
+        },
+        "shipmentNumber": {
+          "type": "number",
+          "example": "nota-fiscal.cdd-embarq",
+          "description": "Código - Decimal Embarque"
+        },
+        "siteID": {
+          "type": "string",
+          "example": "nota-fiscal.cod-estabel",
+          "description": "Código do estabelecimento"
+        },
+        "state": {
+          "type": "string",
+          "example": "nota-fiscal.estado",
+          "description": "Unidade da federação"
+        },
+        "stateTaxID": {
+          "type": "string",
+          "example": "nota-fiscal.ins-estadual",
+          "description": "Inscrição estadual"
+        },
+        "summaryNumber": {
+          "type": "integer",
+          "example": "nota-fiscal.nr-resumo",
+          "description": "Número do resumo"
+        },
+        "totalDiscountAmount": {
+          "type": "number",
+          "example": "nota-fiscal.val-desconto-total",
+          "description": "Valor do desconto total"
+        },
+        "totalDiscountPercentage": {
+          "type": "number",
+          "example": "nota-fiscal.val-pct-desconto-total",
+          "description": "Percentual de desconto total da nota fiscal"
+        },
+        "totalGoodsValue": {
+          "type": "number",
+          "example": "nota-fiscal.vl-mercad",
+          "description": "Valor da mercadoria"
+        },
+        "totalGrossWeight": {
+          "type": "number",
+          "example": "nota-fiscal.peso-bru-tot",
+          "description": "Peso bruto total"
+        },
+        "totalNetWeight": {
+          "type": "number",
+          "example": "nota-fiscal.peso-liq-tot",
+          "description": "Peso líquido total"
+        },
+        "transactionTypeID": {
+          "type": "string",
+          "example": "nota-fiscal.nat-operacao",
+          "description": "Natureza de operação"
+        },
+        "updateTime": {
+          "type": "string",
+          "example": "nota-fiscal.hr-atualiza",
+          "description": "Hora da atualização"
+        },
+        "vehicleLicensePlateID": {
+          "type": "string",
+          "example": "nota-fiscal.placa",
+          "description": "Placa do veículo de transporte"
+        },
+        "vehicleLicensePlateState": {
+          "type": "string",
+          "example": "nota-fiscal.uf-placa",
+          "description": "Estado da placa do veículo que tranportará mercadoria"
+        },
+        "zip": {
+          "type": "string",
+          "example": "nota-fiscal.cep",
+          "description": "CEP"
+        },
+        "invoiceItem": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/invoiceItem"
+          },
+          "description": "Itens da Nota Fiscal."
+        },
+        "invoiceItemTax": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/invoiceItemTax"
+          },
+          "description": "Impostos do Item."
+        },
+        "invoiceBill": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/invoiceBill"
+          },
+          "description": "Duplicatas da Nota Fiscal."
+        },
+        "invoicePackage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/invoicePackage"
+          },
+          "description": "Embalagens da Nota Fiscal."
+        }
+      }
+    },
+    "invoiceItem": {
+      "type": "object",
+      "description": "Itens da Nota Fiscal",
+      "properties": {
+        "businessUnitID": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-unid-negoc",
+          "description": "Código Unidade Negócio"
+        },
+        "comments": {
+          "type": "string",
+          "example": "nar-it-nota.narrativa",
+          "description": "Narrativa do Item"
+        },
+        "componentType": {
+          "type": "integer",
+          "example": "it-nota-fisc.ind-componen",
+          "description": "Tipo de componente"
+        },
+        "costAccount": {
+          "type": "string",
+          "example": "it-nota-fisc.ct-cuscon",
+          "description": "Conta para crédito do valor do custo contábil"
+        },
+        "costAmount": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-cuscontab",
+          "description": "Valor do custo contábil"
+        },
+        "costCenter": {
+          "type": "string",
+          "example": "it-nota-fisc.sc-cuscon",
+          "description": "Centro de custo para credito do valor do custo contábil"
+        },
+        "customerOrderNumber": {
+          "type": "string",
+          "example": "it-nota-fisc.nr-pedcli",
+          "description": "Número do pedido do cliente"
+        },
+        "deliveryNumber": {
+          "type": "integer",
+          "example": "it-nota-fisc.nr-entrega",
+          "description": "Número de seqüência da entrega do item do pedido"
+        },
+        "discountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.per-des-item",
+          "description": "Percentual de desconto sobre o preço unitário"
+        },
+        "discountValue": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-desconto",
+          "description": "Valor do desconto"
+        },
+        "discountValue1": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto[1]",
+          "description": "Valor do Desconto 1"
+        },
+        "discountValue2": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto[2]",
+          "description": "Valor do Desconto 2"
+        },
+        "discountValue3": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto[3]",
+          "description": "Valor do Desconto 3"
+        },
+        "discountValue4": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto[4]",
+          "description": "Valor do Desconto 4"
+        },
+        "discountValue5": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto[5]",
+          "description": "Valor do Desconto 5"
+        },
+        "documentNumber": {
+          "type": "string",
+          "example": "it-nota-fisc.nr-docum",
+          "description": "Número do Documento"
+        },
+        "enteredDiscountAmount": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto-inform",
+          "description": "Valor do desconto informado"
+        },
+        "expenseValue": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-despes-it",
+          "description": "Valor das despesas acessórias rateadas para o item"
+        },
+        "fiscalClassification": {
+          "type": "string",
+          "example": "it-nota-fisc.class-fiscal",
+          "description": "Classificação fiscal do item"
+        },
+        "freightValue": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-frete-it",
+          "description": "Valor do frete"
+        },
+        "fulfillmentType": {
+          "type": "integer",
+          "example": "it-nota-fisc.tipo-atend",
+          "description": "Tipo de atendimento"
+        },
+        "goodsNetAmount": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-merc-liq",
+          "description": "Valor faturado do item ao preço liquido do item"
+        },
+        "goodsOriginalAmount": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-merc-ori",
+          "description": "Valor faturado do item ao preço original"
         },
         "grossWeight": {
           "type": "number",
-          "example": "item.peso-bruto",
-          "description": "Peso Bruto Unitário do Item"
+          "example": "it-nota-fisc.peso-bruto",
+          "description": "Peso bruto do Item"
         },
-        "height": {
+        "insuranceValue": {
           "type": "number",
-          "example": "item.altura",
-          "description": "Altura da peça/item em centímetros"
+          "example": "-",
+          "description": "Valor do Seguro"
         },
-        "image": {
+        "internalQuantity": {
+          "type": "number",
+          "example": "it-nota-fisc.qt-faturada[1]",
+          "description": "Quantidade"
+        },
+        "internalUnitOfMeasure": {
           "type": "string",
-          "example": "item.cod-imagem",
-          "description": "Imagem"
+          "example": "it-nota-fisc.un-fatur[1]",
+          "description": "Unidade de Medida"
         },
-        "internalDescription": {
-          "type": "string",
-          "example": "item.desc-nacional",
-          "description": "Descrição Nacional"
-        },
-        "intlDescription": {
-          "type": "string",
-          "example": "item.desc-inter",
-          "description": "Descrição Internacional"
-        },
-        "inventoryGroup": {
+        "inventoryControlType": {
           "type": "integer",
-          "example": "item.ge-codigo",
-          "description": "Grupo de estoque a que pertence o item"
+          "example": "it-nota-fisc.tipo-con-est",
+          "description": "Tipo de controle de estoque"
         },
-        "itemClassification": {
-          "type": "integer",
-          "example": "item.idi-classif-item",
-          "description": "Classifica o item em genérico, produto ou insumo"
-        },
-        "length": {
-          "type": "number",
-          "example": "item.comprim",
-          "description": "Comprimento da peça/item em centímetros"
-        },
-        "measureUnit": {
+        "invoiceNumber": {
           "type": "string",
-          "example": "item.un",
-          "description": "Unidade de medida do item"
+          "example": "it-nota-fisc.nr-nota-fis",
+          "description": "Número da nota fiscal"
         },
-        "minimumLot": {
+        "invoiceQuantity": {
           "type": "number",
-          "example": "item.lote-minimo",
-          "description": "Lote mínimo para compra"
+          "example": "it-nota-fisc.qt-faturada[2]",
+          "description": "Quantidade Faturamento"
         },
-        "movementStock": {
+        "invoiceUnitOfMeasure": {
+          "type": "string",
+          "example": "it-nota-fisc.un-fatur[2]",
+          "description": "Unidade de Medida Faturamento"
+        },
+        "issueInventory": {
           "type": "boolean",
-          "example": "item.baixa-estoq",
-          "description": "Indica se o item deverá ser baixado do estoque"
+          "example": "it-nota-fisc.baixa-estoq",
+          "description": "Baixa ou não o estoque"
         },
-        "multipleBatch": {
-          "type": "number",
-          "example": "item.lote-multipl",
-          "description": "Lote Múltiplo"
+        "itemCode": {
+          "type": "string",
+          "example": "it-nota-fisc.it-codigo",
+          "description": "Código do item"
         },
-        "multipleSaleLot": {
+        "itemTotalAmount": {
           "type": "number",
-          "example": "item.lote-mulven",
-          "description": "Lote múltiplo de venda do item"
+          "example": "it-nota-fisc.vl-tot-item",
+          "description": "Valor total do item da nota"
+        },
+        "netPrice": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-preuni",
+          "description": "Preço unitário liquido (preço original - descontos)"
         },
         "netWeight": {
           "type": "number",
-          "example": "item.peso-liquido",
-          "description": "Peso líquido do item"
+          "example": "it-nota-fisc.peso-liq-fat",
+          "description": "Peso liquido faturado do item"
         },
-        "obsolete": {
+        "orderNumber": {
           "type": "integer",
-          "example": "item.cod-obsoleto",
-          "description": "Situação"
+          "example": "it-nota-fisc.nr-pedido",
+          "description": "Número do pedido"
         },
-        "obsoleteDate": {
-          "type": "string",
-          "format": "date",
-          "example": "item.data-obsol",
-          "description": "Data em que o item se tornou obsoleto"
-        },
-        "productCode": {
-          "type": "string",
-          "example": "item.it-codigo",
-          "description": "Código do Item"
-        },
-        "productDescription": {
-          "type": "string",
-          "example": "item.desc-item",
-          "description": "Descrição"
-        },
-        "serviceCode": {
-          "type": "integer",
-          "example": "item.cod-servico",
-          "description": "Código de serviço definido pela legislação municipal"
-        },
-        "siteCode": {
-          "type": "string",
-          "example": "item.cod-estabel",
-          "description": "Estabelecimento padrão do item"
-        },
-        "sourceCode": {
-          "type": "integer",
-          "example": "item.cd-origem",
-          "description": "Origem"
-        },
-        "stockType": {
-          "type": "integer",
-          "example": "item.tipo-con-est",
-          "description": "Tipo de Controle de Estoque do Item"
-        },
-        "taxClassification": {
-          "type": "string",
-          "example": "item.class-fiscal",
-          "description": "Classificação Fiscal"
-        },
-        "width": {
+        "originalPrice": {
           "type": "number",
-          "example": "item.largura",
-          "description": "Largura da peça/item em centímetros"
+          "example": "it-nota-fisc.vl-preori",
+          "description": "Preço informado ou de tabela multiplicado pelo índice de financ"
         },
-        "lastUpdate": {
+        "periodDiscountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.val-pct-desconto-periodo",
+          "description": "Percentual de desconto referente ao período controlado"
+        },
+        "priceTableDiscountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.val-pct-desconto-tab-preco",
+          "description": "Percentual de descontos em quantidade da tabela de preços"
+        },
+        "priceTableID": {
           "type": "string",
-          "format": "datetime",
-          "example": "item-log.dtm-alter",
-          "description": "data e hora da última alteração"
+          "example": "it-nota-fisc.nr-tabpre",
+          "description": "Tabela de preços"
         },
-        "businessFamilyDescription": {
-          "type": "string",
-          "example": "fam-comerc.fm-cod-com",
-          "description": "Descrição da Família Comercial"
+        "priceTablePrice": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-pretab",
+          "description": "Preço de tabela ou informado caso não exista tabela de preços"
         },
-        "familyCodeDescription": {
-          "type": "string",
-          "example": "familia.fm-codigo",
-          "description": "Descrição da Família de Material"
-        },        
-        "productReferences": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productReferences"
-          },
-          "description": "Referências do Item."
-        },
-        "altComponent": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/altComponent"
-          },
-          "description": "Componentes Alternativos."
-        },
-        "productPacking": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productPacking"
-          },
-          "description": "Embalagens do Item."
-        },
-        "productSiteCost": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productSiteCost"
-          },
-          "description": "Itens do Estabelecimento."
-        },
-        "productSite": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productSite"
-          },
-          "description": "Parametros Itens x Estabelecimento."
-        }
-      }
-    },
-    "productReferences": {
-      "type": "object",
-      "description": "Referências do Item",
-      "properties": {
-        "EANCode": {
-          "type": "string",
-          "example": "ref-item.cod-ean",
-          "description": "Código EAN"
-        },
-        "productCode": {
-          "type": "string",
-          "example": "ref-item.it-codigo",
-          "description": "Código do Item"
-        },
-        "referenceCode": {
-          "type": "string",
-          "example": "ref-item.cod-refer",
-          "description": "Código da referência"
-        },
-        "referenceDescription": {
-          "type": "string",
-          "example": "referencia.descricao",
-          "description": "Descrição da referência"
-        }
-      }
-    },
-    "altComponent": {
-      "type": "object",
-      "description": "Componentes Alternativos",
-      "properties": {
-        "alternativeCode": {
-          "type": "string",
-          "example": "alternativo.al-codigo",
-          "description": "Componente Alternativo"
-        },
-        "componentCode": {
-          "type": "string",
-          "example": "alternativo.es-codigo",
-          "description": "Componente"
-        },
-        "order": {
+        "productionOrderNumber": {
           "type": "integer",
-          "example": "alternativo.ordem",
-          "description": "Ordem de prioridade de utilização do componente alternativo"
+          "example": "it-nota-fisc.nr-ord-prod",
+          "description": "Número da ordem de produção"
         },
-        "productCode": {
+        "purchaseOrderInstallment": {
+          "type": "integer",
+          "example": "it-nota-fisc.parcela",
+          "description": "Parcela"
+        },
+        "purchaseOrderNumber": {
           "type": "string",
-          "example": "alternativo.it-codigo",
-          "description": "Item"
+          "example": "it-nota-fisc.cod-ord-compra",
+          "description": "Número da ordem de compra do item, originário do pedido compra."
         },
-        "qtyComponent": {
-          "type": "number",
-          "example": "alternativo.qtd-compon",
-          "description": "Quantidade componente para quantidade referência item"
-        },
-        "qtyProduct": {
-          "type": "number",
-          "example": "alternativo.qtd-item",
-          "description": "Quantidade base do item pai"
-        },
-        "qtyUsed": {
-          "type": "number",
-          "example": "alternativo.quant-usada",
-          "description": "Quantidade bruta utilizada do componente alternativo"
+        "reference": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-refer",
+          "description": "Código de referência do item"
         },
         "sequence": {
           "type": "integer",
-          "example": "alternativo.sequencia",
-          "description": "Seq"
+          "example": "it-nota-fisc.nr-seq-fat",
+          "description": "Sequência do item na nota fiscal"
+        },
+        "series": {
+          "type": "string",
+          "example": "it-nota-fisc.serie",
+          "description": "Série da nota fiscal"
+        },
+        "seriesDocum": {
+          "type": "string",
+          "example": "it-nota-fisc.serie-docum",
+          "description": "Série do documento"
+        },
+        "siteID": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-estabel",
+          "description": "Estabelecimento da nota fiscal"
+        },
+        "soldProductCostAccount": {
+          "type": "string",
+          "example": "it-nota-fisc.ct-cusven",
+          "description": "Conta para débito do custo dos produtos vendidos"
+        },
+        "soldProductCostCenter": {
+          "type": "string",
+          "example": "it-nota-fisc.sc-cusven",
+          "description": "Centro de custo para débito do custo das vendas"
+        },
+        "tableGoodsValue": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-merc-tab",
+          "description": "Valor faturado do item ao preço de tabela"
+        },
+        "termDiscountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.val-pct-desconto-prazo",
+          "description": "Percentual de desconto referente ao prazo de pagamento"
+        },
+        "totalDiscountAmount": {
+          "type": "number",
+          "example": "it-nota-fisc.val-desconto-total",
+          "description": "Valor do desconto total"
+        },
+        "totalDiscountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.val-pct-desconto-total",
+          "description": "Percentual de desconto total do item da nota"
+        },
+        "transactionTypeID": {
+          "type": "string",
+          "example": "it-nota-fisc.nat-operacao",
+          "description": "Natureza de operação"
+        },
+        "transactionTypeIDDocum": {
+          "type": "string",
+          "example": "it-nota-fisc.nat-docum",
+          "description": "Natureza de operação"
+        },
+        "unitOfMeasureType": {
+          "type": "boolean",
+          "example": "it-nota-fisc.ind-fat-qtfam",
+          "description": "Fatura na quantidade da família."
         }
       }
     },
-    "productPacking": {
+    "invoiceItemTax": {
       "type": "object",
-      "description": "Embalagens do Item",
+      "description": "Impostos do Item",
       "properties": {
-        "packingCode": {
+        "aliqIcmComp": {
+          "type": "number",
+          "example": "natur-oper.aliq-icm-com",
+          "description": "Percentual ICMS Complementar"
+        },
+        "codSitTributarCofins": {
           "type": "string",
-          "example": "item-caixa.sigla-emb",
+          "example": "it-nota-fisc.cod-sit-tributar-cofins",
+          "description": "Código Situação Tributária COFINS"
+        },
+        "codSitTributarCofinsDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Situação Tributária COFINS"
+        },
+        "codSitTributarIpi": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-sit-tributar-ipi",
+          "description": "Código Situação Tributária IPI"
+        },
+        "codSitTributarPis": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-sit-tributar-pis",
+          "description": "Código Situação Tributária PIS"
+        },
+        "codSitTributarPisDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Situação Tributária PIS"
+        },
+        "cofinsTaxationType": {
+          "type": "integer",
+          "example": "-",
+          "description": "Tributação Cofins"
+        },
+        "cofinsTaxPercent": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual Cofins"
+        },
+        "icmComplem": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-icmscomp-it",
+          "description": "Valor ICMS complementar"
+        },
+        "icmsDiscountPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.per-des-icms",
+          "description": "Percentual de desconto por ICMS"
+        },
+        "icmsTaxationType": {
+          "type": "integer",
+          "example": "it-nota-fisc.cd-trib-icm",
+          "description": "Código de tributação do ICMS"
+        },
+        "icmsTaxationTypeDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição tributação do ICMS"
+        },
+        "icmsTaxPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.aliquota-icm",
+          "description": "Aliquota de ICMS"
+        },
+        "idiModalidBaseIcms": {
+          "type": "integer",
+          "example": "it-nota-fisc.idi-modalid-base-icms",
+          "description": "Indica a Modalidade da Base do ICMS"
+        },
+        "idiModalidBaseIcmsDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Modalidade da Base do ICMS"
+        },
+        "idiModalidBaseIcmsSub": {
+          "type": "integer",
+          "example": "it-nota-fisc.idi-modalid-base-icms-st",
+          "description": "Indica a Modalidade da Base do ICMS ST"
+        },
+        "idiModalidBaseIcmsSubDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Modalidade da Base do ICMS ST"
+        },
+        "idiModalidBaseIpi": {
+          "type": "integer",
+          "example": "it-nota-fisc.idi-modalid-base-ipi",
+          "description": "Indica a Modalidade da Base do IPI"
+        },
+        "idiModalidBaseIpiDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Modalidade da Base do IPI"
+        },
+        "invoiceNumber": {
+          "type": "string",
+          "example": "it-nota-fisc.nr-nota-fis",
+          "description": "Número da nota fiscal"
+        },
+        "ipiTaxationType": {
+          "type": "integer",
+          "example": "it-nota-fisc.cd-trib-ipi",
+          "description": "Código de tributação do IPI"
+        },
+        "ipiTaxationTypeDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição tributação do IPI"
+        },
+        "ipiTaxPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.aliquota-ipi",
+          "description": "Aliquota de IPI"
+        },
+        "issTaxationType": {
+          "type": "integer",
+          "example": "it-nota-fisc.cd-trib-iss",
+          "description": "Código de tributação do ISS"
+        },
+        "issTaxationTypeDescription": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição tributação do ISS"
+        },
+        "issTaxPercent": {
+          "type": "number",
+          "example": "it-nota-fisc.aliquota-iss",
+          "description": "Aliquota de ISS"
+        },
+        "itemCode": {
+          "type": "string",
+          "example": "it-nota-fisc.it-codigo",
+          "description": "Código do item"
+        },
+        "percRedCofins": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual Redução Cofins"
+        },
+        "percRedIcm": {
+          "type": "number",
+          "example": "it-nota-fisc.perc-red-icm",
+          "description": "Percentual de redução da base de cálculo de ICMS"
+        },
+        "percRedIpi": {
+          "type": "number",
+          "example": "it-nota-fisc.perc-red-ipi",
+          "description": "Percentual de redução da base de cálculo do IPI"
+        },
+        "percRedIss": {
+          "type": "number",
+          "example": "it-nota-fisc.perc-red-iss",
+          "description": "Percentual de redução da base de calculo de ISS"
+        },
+        "percRedPis": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual Redução PIS"
+        },
+        "percRetCsll": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual de Retenção de CSLL"
+        },
+        "percRetCofins": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual de Retenção de Cofins"
+        },
+        "percRetPis": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual de Retenção de PIS"
+        },
+        "percSubsPis": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual de PIS Substituto"
+        },
+        "percSubsCofins": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual de Cofins Substituto"
+        },
+        "pisTaxationType": {
+          "type": "integer",
+          "example": "-",
+          "description": "Tributação do PIS"
+        },
+        "pisTaxPercent": {
+          "type": "number",
+          "example": "-",
+          "description": "Percentual PIS"
+        },
+        "reference": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-refer",
+          "description": "Código de referência do item"
+        },
+        "sequence": {
+          "type": "integer",
+          "example": "it-nota-fisc.nr-seq-fat",
+          "description": "Sequência do item na nota fiscal"
+        },
+        "series": {
+          "type": "string",
+          "example": "it-nota-fisc.serie",
+          "description": "Série da nota fiscal"
+        },
+        "siteID": {
+          "type": "string",
+          "example": "it-nota-fisc.cod-estabel",
+          "description": "Estabelecimento da nota fiscal"
+        },
+        "valSat": {
+          "type": "number",
+          "example": "it-nota-fisc.val-sat",
+          "description": "Valor do Serviço de Amparo ao Trabalhador"
+        },
+        "valSenar": {
+          "type": "number",
+          "example": "it-nota-fisc.val-senar",
+          "description": "Valor do Serviço Nacional de Aprendizagem"
+        },
+        "vlBCofins": {
+          "type": "number",
+          "example": "",
+          "description": "Base do Cofins"
+        },
+        "vlBCofinsSubs": {
+          "type": "number",
+          "example": "it-nota-fisc.val-base-cofins-substto",
+          "description": "Base COFINS Substituto"
+        },
+        "vlBicmsIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-bicms-it",
+          "description": "Base de calculo de ICMS para o item"
+        },
+        "vlBipiIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-bipi-it",
+          "description": "Base de calculo do IPI para o item"
+        },
+        "vlBissIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-biss-it",
+          "description": "Base de calculo do ISS para o item"
+        },
+        "vlBPis": {
+          "type": "number",
+          "example": "",
+          "description": "Base do PIS"
+        },
+        "vlBPisSubs": {
+          "type": "number",
+          "example": "it-nota-fisc.val-base-pis-substto",
+          "description": "Base PIS Substituto"
+        },
+        "vlBsubsIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-bsubs-it",
+          "description": "Base de ICMS do item retido por substituição tributaria"
+        },
+        "vlCsllRet": {
+          "type": "number",
+          "example": "it-nota-fisc.val-retenc-csll",
+          "description": "Valor CSLL retido"
+        },
+        "vlCofins": {
+          "type": "number",
+          "example": "",
+          "description": "Valor do Cofins"
+        },
+        "vlCofinsRet": {
+          "type": "number",
+          "example": "it-nota-fisc.val-retenc-cofins",
+          "description": "Valor do Cofins Retido"
+        },
+        "vlCofinsSubs": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-finsocial",
+          "description": "Valor do Cofins Substituto"
+        },
+        "vlIcmsIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-icms-it",
+          "description": "Valor do ICMS para o item"
+        },
+        "vlIcmsntIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-icmsnt-it",
+          "description": "Valor de ICMS do item amparado por isenção ou não incidência"
+        },
+        "vlIcmsouIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-icmsou-it",
+          "description": "Valor do ICMS do item que não confere débito do imposto"
+        },
+        "vlIcmsubIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-icmsub-it",
+          "description": "Valor de ICMS retido"
+        },
+        "vlInssRf": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-ir-adic",
+          "description": "Valor do INSS"
+        },
+        "vlIpiIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-ipi-it",
+          "description": "Valor de IPI do item"
+        },
+        "vlIpintIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-ipint-it",
+          "description": "Valor de IPI do item amparado por isenção ou não incidência"
+        },
+        "vlIpiouIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-ipiou-it",
+          "description": "Valor de IPI do item que não confere débito do imposto"
+        },
+        "vlIrfIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-irf-it",
+          "description": "Valor do Imposto de Renda retido na fonte"
+        },
+        "vlIssIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-iss-it",
+          "description": "Valor de ISS do Item"
+        },
+        "vlIssntIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-issnt-it",
+          "description": "Valor de ISS de item amparado por isenção ou não incidência"
+        },
+        "vlIssouIt": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-issou-it",
+          "description": "Valor de ISS do item que não confere débito do imposto"
+        },
+        "vlPis": {
+          "type": "number",
+          "example": "",
+          "description": "Valor de PIS"
+        },
+        "vlPisRet": {
+          "type": "number",
+          "example": "it-nota-fisc.val-retenc-pis",
+          "description": "Valor de PIS Retido"
+        },
+        "vlPisSubs": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-pis",
+          "description": "Valor de PIS Substituto"
+        }
+      }
+    },
+    "invoiceBill": {
+      "type": "object",
+      "description": "Duplicatas da Nota Fiscal",
+      "properties": {
+        "billNumber": {
+          "type": "string",
+          "example": "fat-duplic.nr-fatura",
+          "description": "Número da fatura"
+        },
+        "comissionValue": {
+          "type": "number",
+          "example": "fat-duplic.vl-comis",
+          "description": "Valor da base de calculo da comissão dos representantes"
+        },
+        "discountDate": {
+          "type": "string",
+          "format": "date",
+          "example": "fat-duplic.dt-desconto",
+          "description": "Data limite de pagamento para obtenção do desconto"
+        },
+        "discountValue": {
+          "type": "number",
+          "example": "fat-duplic.vl-desconto",
+          "description": "Valor do desconto para pagamento antecipado"
+        },
+        "docClassCode": {
+          "type": "string",
+          "example": "fat-duplic.cod-esp",
+          "description": "Espécie do título"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "example": "fat-duplic.dt-venciment",
+          "description": "Data de vencimento da duplicata"
+        },
+        "dueDateType": {
+          "type": "integer",
+          "example": "fat-duplic.cod-vencto",
+          "description": "Código do vencimento"
+        },
+        "installmentNumber": {
+          "type": "string",
+          "example": "fat-duplic.parcela",
+          "description": "Parcela da fatura"
+        },
+        "logImptoRetid": {
+          "type": "boolean",
+          "example": "fat-duplic.log-impto-retid",
+          "description": "Imposto Retido"
+        },
+        "netValue": {
+          "type": "number",
+          "example": "fat-duplic.vl-parcela",
+          "description": "Valor liquido de cada parcela da duplicata"
+        },
+        "series": {
+          "type": "string",
+          "example": "fat-duplic.serie",
+          "description": "Série"
+        },
+        "siteID": {
+          "type": "string",
+          "example": "fat-duplic.cod-estabel",
+          "description": "Código do estabelecimento"
+        }
+      }
+    },
+    "invoicePackage": {
+      "type": "object",
+      "description": "Embalagens da Nota Fiscal",
+      "properties": {
+        "invoiceNumber": {
+          "type": "string",
+          "example": "nota-embal.nr-nota-fis",
+          "description": "Número da nota fiscal"
+        },
+        "packageQuantity": {
+          "type": "string",
+          "example": "nota-embal.qt-volumes",
+          "description": "Quantidade de volumes"
+        },
+        "packageShortName": {
+          "type": "string",
+          "example": "nota-embal.sigla-emb",
           "description": "Sigla da embalagem"
         },
-        "packingDescription": {
+        "series": {
           "type": "string",
-          "example": "embalag.desc-emb",
-          "description": "Descrição da embalagem"
+          "example": "nota-embal.serie",
+          "description": "Série da nota fiscal"
         },
-        "productCode": {
+        "siteID": {
           "type": "string",
-          "example": "item-caixa.it-codigo",
-          "description": "Código do item"
+          "example": "nota-embal.cod-estabel",
+          "description": "Código do estabelecimento"
         },
-        "qtyProduct": {
-          "type": "number",
-          "example": "item-caixa.qt-item",
-          "description": "Quantidade de itens na embalagem"
+        "volumeDescription": {
+          "type": "string",
+          "example": "nota-embal.desc-vol",
+          "description": "Descrição do conteúdo dos volumes"
         }
       }
     },
-    "productSiteCost": {
+    "returnInvoicePublicResponse": {
       "type": "object",
-      "description": "Itens do Estabelecimento",
-      "properties": {
-        "batchDate": {
-          "type": "string",
-          "format": "date",
-          "example": "item-estab.mensal-ate",
-          "description": "Data do médio batch"
-        },
-        "batchGGFValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-ggf-m",
-          "description": "Valor Unit GGF Batch"
-        },
-        "batchMatValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mat-m",
-          "description": "Valor Unit Mat Batch"
-        },
-        "batchMOBValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mob-m",
-          "description": "Valor Unit Mob Batch"
-        },
-        "onlineDate": {
-          "type": "string",
-          "format": "date",
-          "example": "item-estab.on-line-ate",
-          "description": "Data do médio on-line"
-        },
-        "onlineGGFValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-ggf-o",
-          "description": "Valor Unit GGF On-line"
-        },
-        "onlineMatValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mat-o",
-          "description": "Valor Unit Mat On-line"
-        },
-        "onlineMOBValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mob-o",
-          "description": "Valor Unit Mob On-line"
-        },
-        "productCode": {
-          "type": "string",
-          "example": "item-estab.it-codigo",
-          "description": "Item"
-        },
-        "siteCode": {
-          "type": "string",
-          "example": "item-estab.cod-estabel",
-          "description": "Estabelecimento"
-        },
-        "standardDate": {
-          "type": "string",
-          "format": "date",
-          "example": "item-estab.padrao-ate",
-          "description": "Data do padrão"
-        },
-        "standardGGFValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-ggf-p",
-          "description": "Valor Unit GGF Padrão"
-        },
-        "standardMatValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mat-p",
-          "description": "Valor Unit Mat Padrão"
-        },
-        "standardMOBValue": {
-          "type": "number",
-          "example": "item-estab.val-unit-mob-p",
-          "description": "Valor Unit Mob Padrão"
-        },
-        "warehouseCode": {
-          "type": "string",
-          "example": "item-estab.deposito-pad",
-          "description": "Depósito"
-        }
-      }
-    },
-    "productSite": {
-      "type": "object",
-      "description": "Parametros Itens x Estabelecimento",
-      "properties": {
-        "basePrice": {
-          "type": "number",
-          "example": "item-uni-estab.preco-base",
-          "description": "Preço Base"
-        },
-        "billable": {
-          "type": "boolean",
-          "example": "item-uni-estab.ind-item-fat",
-          "description": "Indica se o item pode ser faturado"
-        },
-        "businessUnit": {
-          "type": "string",
-          "example": "item-uni-estab.cod-unid-negoc",
-          "description": "Código Unidade Negócio"
-        },
-        "EANCode": {
-          "type": "string",
-          "example": "item-uni-estab.ean-code",
-          "description": "Código de identificação padrão do item"
-        },
-        "economicLot": {
-          "type": "number",
-          "example": "item-uni-estab.lote-economi",
-          "description": "Lote Econômico"
-        },
-        "minimumLot": {
-          "type": "number",
-          "example": "item-uni-estab.lote-minimo",
-          "description": "Lote mínimo para compra"
-        },
-        "multipleBatch": {
-          "type": "number",
-          "example": "item-uni-estab.lote-multipl",
-          "description": "Lote Múltiplo"
-        },
-        "multipleSaleLot": {
-          "type": "number",
-          "example": "item-uni-estab.lote-mulven",
-          "description": "Lote múltiplo de venda do item"
-        },
-        "negativeBalance": {
-          "type": "integer",
-          "example": "item-uni-estab.perm-saldo-neg",
-          "description": "Permite parametrizar o Tipo de Saldo"
-        },
-        "obsolete": {
-          "type": "integer",
-          "example": "item-uni-estab.cod-obsoleto",
-          "description": "Situação"
-        },
-        "productCode": {
-          "type": "string",
-          "example": "item-uni-estab.it-codigo",
-          "description": "Código do item"
-        },
-        "siteCode": {
-          "type": "string",
-          "example": "item-uni-estab.cod-estabel",
-          "description": "Código do Estabelecimento"
-        }
-      }
-    },
-    "productStorePublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os itens cadastrados no ERP pertecentes a integração VTEX",
+      "description": "Resposta da requisição do serviço que retorna as Notas Fiscais de Devolução cadastrados no ERP",
       "properties": {
         "total": {
           "type": "integer",
@@ -1281,322 +1642,572 @@
           "type": "boolean"
         },
         "items": {
-          "description": "Lista contendo informações dos Itens cadastrados no ERP",
+          "description": "Lista contendo informações das Notas Fiscais de Devolução cadastradas no ERP",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/productStorePublic"
+            "$ref": "#/definitions/returnInvoicePublic"
           }
         }
       }
     },
-    "productStorePublic": {
+    "returnInvoicePublic": {
       "type": "object",
-      "description": "Item",
+      "description": "Notas Fiscais de Devolução",
       "properties": {
-        "categoryCode": {
-          "type": "string",
-          "example": "mgind.item.fm-cod-com",
-          "description": "Família comercial a qual pertence o item"
-        },
-        "itemDescription": {
-          "type": "string",
-          "example": "mgind.item.desc-item",
-          "description": "Descrição do item"
-        },
-        "itemCode": {
-          "type": "string",
-          "example": "mgind.item.it-codigo",
-          "description": "Código do item"
-        },
-        "isActive": {
-          "type": "boolean",
-          "example": "mgind.item.cod-obsoleto",
-          "description": "Situção do item"
-        },
-        "erpLastChange": {
-          "type": "string",
-          "format": "date-time",
-          "example": "mgind.item-log.dtm-alter",
-          "description": "Data e hora da última alteração"
-        }
-      }
-    },
-    "productSkuStorePublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os SKU´s cadastrados no ERP pertecentes a integração VTEX",
-      "properties": {
-        "total": {
-          "type": "integer",
-          "description": "Quantidade de registros"
-        },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações dos SKU´s cadastrados no ERP",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/productSkuStorePublic"
-          }
-        }
-      }
-    },
-    "productSkuStorePublic": {
-      "type": "object",
-      "description": "Item",
-      "properties": {
-        "referenceCode": {
-          "type": "string",
-          "example": "mgind.item.cod-refer",
-          "description": "Referência do item"
-        },
-        "itemDescription": {
-          "type": "string",
-          "example": "mgind.item.desc-item",
-          "description": "Descrição do item"
-        },
-        "itemCode": {
-          "type": "string",
-          "example": "mgind.item.it-codigo",
-          "description": "Chave ERP - Código do item + código da referência do item (ref-item.cod-refer) quando item possui referência - Exemplo iphone|branco. Quando o item não possuir referência é gravado apenas o código do item."
-        },
-        "barCode": {
-          "type": "string",
-          "example": "mgind.item-mat.cod-ean",
-          "description": "Código GTIN/EAN do item"
-        },
-        "isActive": {
-          "type": "boolean",
-          "example": "mgind.item.cod-obsoleto",
-          "description": "Situção do item"
-        },
-        "length": {
+        "costValue": {
           "type": "number",
-          "example": "mgind.item.comprim",
-          "description": "Comprimento da peça/item em centímetros"
-        },
-        "height": {
-          "type": "number",
-          "example": "mgind.item.altura",
-          "description": "Altura da peça/item em centímetros"
-        },
-        "width": {
-          "type": "number",
-          "example": "mgind.item.largura",
-          "description": "Largura da peça/item em centímetros"
-        },
-        "weight": {
-          "type": "number",
-          "example": "mgind.item.peso-liquido",
-          "description": "Peso líquido do item"
-        },
-        "realWeight": {
-          "type": "number",
-          "example": "mgind.item.peso-bruto",
-          "description": "Peso bruto do item"
-        },
-        "measurementUnit": {
-          "type": "string",
-          "example": "mgind.item.un",
-          "description": "Unidade de medida do item"
-        },
-        "productRootCode": {
-          "type": "string",
-          "example": "mgind.item.it-codigo",
-          "description": "Código do item raiz"
-        },
-        "erpLastChange": {
-          "type": "string",
-          "format": "date-time",
-          "example": "mgind.item-log.dtm-alter",
-          "description": "Data e hora da última alteração"
-        }
-      }
-    },
-    "materialFamiliesPublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna as Famílias de Materiais cadastrados no ERP",
-      "properties": {
-        "total": {
-          "type": "integer",
-          "description": "Quantidade de registros"
-        },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações das Famílias de Materiais cadastrados no ERP",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/materialFamiliesPublic"
-          }
-        }
-      }
-    },
-    "materialFamiliesPublic": {
-      "type": "object",
-      "description": "Família de Material",
-      "properties": {
-        "code": {
-          "type": "string",
-          "example": "familia.fm-codigo",
-          "description": "Código da Família de Material"
-        },
-        "description": {
-          "type": "string",
-          "example": "familia.descricao",
-          "description": "Descrição"
-        },
-        "measureUnit": {
-          "type": "string",
-          "example": "familia.un",
-          "description": "Unidade Padrão da Família"
-        },
-        "measureUnitDetail": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/measureUnit"
-          },
-          "description": "Unidade de Medida."
-        }
-      }
-    },
-    "measureUnit": {
-      "type": "object",
-      "description": "Unidade de Medida",
-      "properties": {
-        "code": {
-          "type": "string",
-          "example": "tab-unidade.un",
-          "description": "Unid Medid"
-        },
-        "descDimension": {
-          "type": "string",
-          "example": "-",
-          "description": "Descrição Dimensão"
-        },
-        "description": {
-          "type": "string",
-          "example": "tab-unidade.descricao",
-          "description": "Descrição"
-        },
-        "dimensionCode": {
-          "type": "integer",
-          "example": "tab-unidade.dimensao",
-          "description": "Dimensão"
-        },
-        "fiscalAcronym": {
-          "type": "string",
-          "example": "-",
-          "description": "Abreviatura Fiscal"
-        }
-      }
-    },
-    "warehousePublicResponse": {
-      "type": "object",
-      "description": "Resposta da requisição do serviço que retorna a lista de Depósitos cadastrados no ERP",
-      "properties": {
-        "total": {
-          "type": "integer",
-          "description": "Quantidade de registros"
-        },
-        "hasNext": {
-          "type": "boolean"
-        },
-        "items": {
-          "description": "Lista contendo informações da lista de Depósitos cadastrados no ERP",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/warehousePublic"
-          }
-        }
-      }
-    },
-    "warehousePublic": {
-      "type": "object",
-      "description": "Depósito",
-      "properties": {
-        "allocWmsQty": {
-          "type": "boolean",
-          "example": "deposito.log-aloca-qtd-wms",
-          "description": "Indica se os armazenamentos no WMS devem alocar saldos no ERP."
-        },
-        "code": {
-          "type": "string",
-          "example": "deposito.cod-depos",
-          "description": "Depósito"
-        },
-        "considerMrpOrders": {
-          "type": "boolean",
-          "example": "deposito.log-ordens-mrp",
-          "description": "Considera ordens no MRP quando não considera saldo do depósito"
+          "example": "devol-cli.vl-custo",
+          "description": "Valor do custo das mercadorias"
         },
         "customerCode": {
           "type": "integer",
-          "example": "-",
-          "description": "Código do emitente"
+          "example": "devol-cli.cod-emitente",
+          "description": "Código do emitente da nota fiscal"
         },
-        "descWarehouseType": {
+        "deliveryNumber": {
+          "type": "integer",
+          "example": "devol-cli.nr-entrega",
+          "description": "Número da seqüência da entrega do item do pedido"
+        },
+        "invoiceNumber": {
           "type": "string",
-          "example": "-",
-          "description": "Descrição Tipo de Depósito"
+          "example": "devol-cli.nr-nota-fis",
+          "description": "Número da nota fiscal"
         },
-        "finishedProdWarehouse": {
-          "type": "boolean",
-          "example": "deposito.ind-acabado",
-          "description": "Depósito de produtos acabados"
+        "invoiceSeq": {
+          "type": "integer",
+          "example": "devol-cli.nr-sequencia",
+          "description": "Seqüência do pedido de venda devolvida"
         },
-        "includeAllocBalance": {
-          "type": "boolean",
-          "example": "deposito.alocado",
-          "description": "Considera saldo para alocação"
-        },
-        "includeAvailBalance": {
-          "type": "boolean",
-          "example": "deposito.cons-saldo",
-          "description": "Considera Saldo Disponível"
-        },
-        "name": {
+        "invoiceSeries": {
           "type": "string",
-          "example": "deposito.nome",
-          "description": "Descrição do Depósito"
+          "example": "devol-cli.serie",
+          "description": "Série de emissão da nota fiscal"
         },
-        "processWarehouse": {
-          "type": "boolean",
-          "example": "deposito.ind-processo",
-          "description": "Depósito de processo"
+        "productCode": {
+          "type": "string",
+          "example": "devol-cli.it-codigo",
+          "description": "Código do item devolvido"
         },
-        "QcWarehouse": {
-          "type": "boolean",
-          "example": "deposito.ind-dep-cq",
-          "description": "Depósito de Controle de Qualidade"
+        "referenceCode": {
+          "type": "string",
+          "example": "devol-cli.cod-refer",
+          "description": "Código de referência do item"
         },
-        "recycledWarehouse": {
-          "type": "boolean",
-          "example": "deposito.log-reciclagem",
-          "description": "Depósito para material reciclado"
+        "returnCode": {
+          "type": "integer",
+          "example": "devol-cli.codigo-rejei",
+          "description": "Motivo da devolução do cliente"
         },
-        "scrapWarehouse": {
-          "type": "boolean",
-          "example": "deposito.ind-dep-rej",
-          "description": "Depósito de Rejeitos"
+        "returnDate": {
+          "type": "string",
+          "format": "date",
+          "example": "devol-cli.dt-devol",
+          "description": "Data de devolução do item"
+        },
+        "returnInoiceSeq": {
+          "type": "integer",
+          "example": "devol-cli.sequencia",
+          "description": "Sequencia do Item na nota fiscal de devolucao"
+        },
+        "returnInvoiceNumber": {
+          "type": "string",
+          "example": "devol-cli.nro-docto",
+          "description": "Número do documento de entrada"
+        },
+        "returnInvoiceSeries": {
+          "type": "string",
+          "example": "devol-cli.serie-docto",
+          "description": "Série da nota fiscal de entrada"
+        },
+        "returnQty": {
+          "type": "number",
+          "example": "devol-cli.qt-devolvida",
+          "description": "Quantidade devolvida do item"
+        },
+        "returnValue": {
+          "type": "number",
+          "example": "devol-cli.vl-devol",
+          "description": "Valor da devolução"
         },
         "shortName": {
           "type": "string",
-          "example": "deposito.nome-abrev",
-          "description": "Nome abreviado do destinatário em remessa para deposito externo"
+          "example": "devol-cli.nome-ab-emi",
+          "description": "Nome abreviado do cliente"
         },
-        "warehouseType": {
+        "siteCode": {
+          "type": "string",
+          "example": "devol-cli.cod-estabel",
+          "description": "Código do estabelecimento de saída"
+        },
+        "status": {
           "type": "integer",
-          "example": "deposito.ind-tipo-dep",
-          "description": "Tipo de Depósito"
+          "example": "devol-cli.situacao",
+          "description": "Situação"
         },
-        "wmsWarehouse": {
-          "type": "boolean",
-          "example": "deposito.log-gera-wms",
-          "description": "Indicar se o depósito é de WMS ou não"
+        "transactionType": {
+          "type": "string",
+          "example": "devol-cli.nat-operacao",
+          "description": "Natureza de operação de entrada"
         }
       }
-    }
+    },
+    "itemTaxSimulationPublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna a simulação do cálculo dos tributos de uma nota fiscal.",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações dos tributos do item de uma Nota Fiscal",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/itemTaxSimulationPublic"
+          }
+        }
+      }
+    },
+    "itemTaxSimulationPublic": {
+      "type": "object",
+      "description": "Simulação do cálculo dos tributos da nota fiscal.",
+      "properties": {
+        "itemCode": {
+          "type": "string",
+          "example": "itemTax.it-codigo",
+          "description": "Código do item"
+        },
+        "itemRefer": {
+          "type": "string",
+          "example": "itemTax.cod-refer",
+          "description": "Código de referência do item"
+        },
+        "siteCode": {
+          "type": "integer",
+          "example": "itemTax.cod-estabel",
+          "description": "Código do estabelecimento"
+        },
+        "customerCode": {
+          "type": "integer",
+          "example": "itemTax.cod-emitente",
+          "description": "Código do emitente"
+        },
+        "quantity": {
+          "type": "integer",
+          "example": "itemTax.quantidade",
+          "description": "Quantidade do item"
+        },
+        "negotiatedPrice": {
+          "type": "integer",
+          "example": "itemTax.preco-negociado",
+          "description": "Preço negociado"
+        },
+        "unitPrice": {
+          "type": "integer",
+          "example": "itemTax.vl-preuni",
+          "description": "Preço unitário"
+        },
+        "netCommodityPrice": {
+          "type": "integer",
+          "example": "itemTax.vl-merc-liq",
+          "description": "Preço da mercadoria líquida"
+        },
+        "percentDiscount": {
+          "type": "number",
+          "example": "itemTax.per-des-item",
+          "description": "Valor do desconto"
+        },
+        "percentDiscountTotal": {
+          "type": "number",
+          "example": "itemTax.vl-tot-desc",
+          "description": "Valor do desconto total"
+        },
+        "totalItemPrice": {
+          "type": "number",
+          "example": "itemTax.vl-tot-item",
+          "description": "Valor total do item"
+        },
+        "transactionType": {
+          "type": "string",
+          "example": "itemTax.nat-operacao",
+          "description": "Natureza de Operação"
+        },
+        "vlIcmsIt": {
+          "type": "number",
+          "example": "itemTax.vl-icms-it",
+          "description": "Valor do ICMS para o item"
+        },
+        "vlBicmsIt": {
+          "type": "number",
+          "example": "itemTax.vl-bicms-it",
+          "description": "Base de calculo de ICMS para o item"
+        },
+        "vlIcmsubIt": {
+          "type": "number",
+          "example": "itemTax.vl-icmsub-it",
+          "description": "Valor de ICMS retido"
+        },
+        "vlDifIcms": {
+          "type": "number",
+          "example": "itemTax.vl-dif-icms",
+          "description": "Valor do diferimento de ICMS para o item"
+        },
+        "icmComplemIt": {
+          "type": "number",
+          "example": "itemTax.vl-icmscomp-it",
+          "description": "Valor ICMS complementar para o item"
+        },
+        "vlIcmsouIt": {
+          "type": "number",
+          "example": "itemTax.vl-icmsou-it",
+          "description": "Valor do ICMS do item que não confere débito do imposto"
+        },
+        "vlIcmsntIt": {
+          "type": "number",
+          "example": "itemTax.vl-icmsnt-it",
+          "description": "Valor de ICMS do item amparado por isenção ou não incidência"
+        },
+        "icmsTaxPercent": {
+          "type": "number",
+          "example": "itemTax.aliquota-icm",
+          "description": "Aliquota de ICMS"
+        },
+        "vlBsubsIt": {
+          "type": "number",
+          "example": "itemTax.vl-bsubs-it",
+          "description": "Base de ICMS do item retido por substituição tributaria"
+        },
+        "icmsSubstTaxPercent": {
+          "type": "number",
+          "example": "itemTax.aliquota-icmsub",
+          "description": "Alíquota de ICMS substituto do item"
+        },
+        "aliqIcmComp": {
+          "type": "number",
+          "example": "itemTax.aliq-icm-com",
+          "description": "Alíquota de ICMS complementar do item"
+        },
+        "icmsTaxationType": {
+          "type": "integer",
+          "example": "itemTax.cd-trib-icm",
+          "description": "Código de tributação do ICMS"
+        },
+        "descriptionIcmsTaxation": {
+          "type": "string",
+          "example": "itemTax.cd-trib-icm-desc",
+          "description": "Descrição da tributação do ICMS"
+        },
+        "icmsDiscountPercent": {
+          "type": "number",
+          "example": "itemTax.per-des-icms",
+          "description": "Percentual de desconto por ICMS"
+        },
+        "percRedIcm": {
+          "type": "number",
+          "example": "itemTax.perc-red-icm",
+          "description": "Percentual de redução da base de cálculo de ICMS"
+        },
+        "icmsMva": {
+          "type": "number",
+          "example": "itemTax.mva",
+          "description": "Margem de valor agregado do ICMS"
+        },
+        "vlIpiIt": {
+          "type": "number",
+          "example": "itemTax.vl-ipi-it",
+          "description": "Valor de IPI do item"
+        },
+        "ipiTaxPercent": {
+          "type": "number",
+          "example": "itemTax.aliquota-ipi",
+          "description": "Aliquota de IPI"
+        },
+        "ipiTaxationType": {
+          "type": "integer",
+          "example": "itemTax.cd-trib-ipi",
+          "description": "Código de tributação do IPI"
+        },
+        "descriptionIpiTaxation": {
+          "type": "string",
+          "example": "itemTax.cd-trib-ipi-desc",
+          "description": "Descrição da tributação do IPI"
+        },
+        "vlBipiIt": {
+          "type": "number",
+          "example": "itemTax.vl-bipi-it",
+          "description": "Base de calculo do IPI para o item"
+        },
+        "percRedIpi": {
+          "type": "number",
+          "example": "itemTax.perc-red-ipi",
+          "description": "Percentual de redução da base de cálculo do IPI"
+        },
+        "vlIpiouIt": {
+          "type": "number",
+          "example": "itemTax.vl-ipiou-it",
+          "description": "Valor de IPI do item que não confere débito do imposto"
+        },
+        "vlIpintIt": {
+          "type": "number",
+          "example": "itemTax.vl-ipint-it",
+          "description": "Valor de IPI do item amparado por isenção ou não incidência"
+        },
+        "vlIssIt": {
+          "type": "number",
+          "example": "itemTax.vl-iss-it",
+          "description": "Valor de ISS do Item"
+        },
+        "issTaxPercent": {
+          "type": "number",
+          "example": "itemTax.aliquota-iss",
+          "description": "Aliquota de ISS"
+        },
+        "issTaxationType": {
+          "type": "integer",
+          "example": "itemTax.cd-trib-iss",
+          "description": "Código de tributação do ISS"
+        },
+        "descriptionIssTaxation": {
+          "type": "string",
+          "example": "itemTax.cd-trib-iss-descc",
+          "description": "Descrição da tributação do ISS"
+        },
+        "vlBissIt": {
+          "type": "number",
+          "example": "itemTax.vl-biss-it",
+          "description": "Base de calculo do ISS para o item"
+        },
+        "percRedIss": {
+          "type": "number",
+          "example": "itemTax.perc-red-iss",
+          "description": "Percentual de redução da base de calculo de ISS"
+        },
+        "vlIssouIt": {
+          "type": "number",
+          "example": "itemTax.vl-issou-it",
+          "description": "Valor de ISS do item que não confere débito do imposto"
+        },
+        "vlIssntIt": {
+          "type": "number",
+          "example": "itemTax.vl-issnt-it",
+          "description": "Valor de ISS de item amparado por isenção ou não incidência"
+        },
+        "vlPis": {
+          "type": "number",
+          "example": "itemTax.vl-pis",
+          "description": "Valor de PIS"
+        },		
+        "vlPisSubs": {
+          "type": "number",
+          "example": "itemTax.vl-pis-substto",
+          "description": "Valor de PIS Substituto"
+        },
+        "pisTaxationType": {
+          "type": "integer",
+          "example": "itemTax.cd-trib-pis",
+          "description": "Código de tributação do PIS"
+        },
+        "pisTaxPercent": {
+          "type": "number",
+          "example": "itemTax.perc-pis",
+          "description": "Alíquota do PIS"
+        },
+        "percRedPis": {
+          "type": "number",
+          "example": "itemTax.perc-red-pis",
+          "description": "Percentual de redução da base de calculo do PIS"
+        },
+        "pisTaxRetencPercent": {
+          "type": "number",
+          "example": "itemTax.perc-retenc-pis",
+          "description": "Alíquota de Retenção do PIS"
+        },
+        "vlBPisIt": {
+          "type": "number",
+          "example": "itemTax.vl-base-pis",
+          "description": "Base de cálculo do PIS"
+        },
+        "vlBPisItSubs": {
+          "type": "number",
+          "example": "itemTax.val-base-pis-substto",
+          "description": "Base de cálculo do PIS Substituto"
+        },
+        "vlPisRetenc": {
+          "type": "number",
+          "example": "itemTax.vl-pis-retenc",
+          "description": "Valor de Retenção do PIS"
+        },				
+        "vlCofins": {
+          "type": "number",
+          "example": "itemTax.vl-cofins",
+          "description": "Valor do Cofins"
+        },
+        "vlCofinsSubs": {
+          "type": "number",
+          "example": "itemTax.vl-cofins-substto",
+          "description": "Valor do Cofins Substituto"
+        },
+        "cofinsTaxationType": {
+          "type": "integer",
+          "example": "itemTax.cd-trib-cofins",
+          "description": "Código de tributação do Cofins"
+        },
+        "cofinsTaxPercent": {
+          "type": "number",
+          "example": "itemTax.perc-cofins",
+          "description": "Alíquota do Cofins"
+        },		
+        "percRedCofins": {
+          "type": "number",
+          "example": "itemTax.perc-red-cofins",
+          "description": "Percentual de redução da base de calculo do Cofins"
+        },		
+        "cofinsTaxRetencPercent": {
+          "type": "number",
+          "example": "itemTax.perc-retenc-cofins",
+          "description": "Alíquota de Retenção do Cofins"
+        },
+        "vlBCofinsIt": {
+          "type": "number",
+          "example": "itemTax.vl-base-cofins",
+          "description": "Base de cálculo do Cofins"
+        },		
+        "vlBCofinsItSubs": {
+          "type": "number",
+          "example": "itemTax.val-base-cofins-substto",
+          "description": "Base de cálculo do Cofins Substituto"
+        },		
+        "vlCofinsRetenc": {
+          "type": "number",
+          "example": "itemTax.vl-cofins-retenc",
+          "description": "Valor de Retenção do Cofins"
+        },				
+        "vlInssRf": {
+          "type": "number",
+          "example": "itemTax.vl-inss-rf",
+          "description": "Valor do INSS retido na fonte"
+        },				
+        "vlIrfIt": {
+          "type": "number",
+          "example": "itemTax.vl-irf-it",
+          "description": "Valor do Imposto de Renda retido na fonte"
+        },
+        "valSat": {
+          "type": "number",
+          "example": "itemTax.val-sat",
+          "description": "Valor do Serviço de Amparo ao Trabalhador"
+        },		
+        "valSenar": {
+          "type": "number",
+          "example": "itemTax.val-senar",
+          "description": "Valor do Serviço Nacional de Aprendizagem"
+        },
+        "csllTaxRetencPercent": {
+          "type": "number",
+          "example": "itemTax.perc-retenc-csll",
+          "description": "Alíquota de Retenção do CSLL"
+        },		
+        "vlCsllRetenc": {
+          "type": "number",
+          "example": "itemTax.vl-retenc-csll",
+          "description": "Valor CSLL retido"
+        }
+      }
+    },
+    "invoicePublicEcommerceResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna as notas fiscais autorizadas pela Sefaz e que foram geradas por pedidos de venda criados pelo e-commerce",
+      "properties": {
+        "companyId": {
+          "type": "string",
+          "description": "Código da Empresa onde foi gerada a Nota Fiscal"
+        },
+		"branchId": {
+          "type": "string",
+          "description": "Código do Estabelecimento da Nota Fiscal"
+        },
+		"id": {
+          "type": "string",
+          "description": "Concatenação dos campos Estabelecimento, Série e Número da Nota Fiscal, separados por barra vertical"
+        },
+		"createDate": {
+          "type": "string",
+          "description": "Data e hora de criação da Nota Fiscal"
+        },
+		"lastChange": {
+          "type": "string",
+          "description": "Data e hora de autorização da Nota Fiscal"
+        },
+		"orderId": {
+          "type": "string",
+          "description": "Número do pedido criado internamente"
+        },
+		"orderStatus": {
+          "type": "integer",
+          "description": "Código de situação do pedido"
+        },
+		"number": {
+          "type": "string",
+          "description": "Número da Nota Fiscal"
+        },
+		"date": {
+          "type": "string",
+          "description": "Data de emissão da Nota Fiscal"
+        },
+		"value": {
+          "type": "number",
+          "description": "Valor total da Nota Fiscal"
+        },
+		"nfeAccessKey": {
+          "type": "string",
+          "description": "Chave de acesso da Nota Fiscal"
+        },
+        "danfeURL": {
+          "type": "string",
+          "description": "URL para consulta da Nota Fiscal na Sefaz"
+        },
+        "invoiceType": {
+          "type": "string",
+          "description": "Tipo de Nota Fiscal"
+        },
+        "listOfDocumentItem": {
+          "type": "array",
+		  "items": {
+            "$ref": "#/definitions/listOfDocumentItem"
+          },
+          "description": "Array de itens da Nota Fiscal"
+        }
+      }
+    },
+	"listOfDocumentItem": {
+      "type": "object",
+      "description": "Dados do item da Nota Fiscal",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "it-nota-fisc.it-codigo",
+          "description": "Código do item"
+        },
+        "productId": {
+          "type": "string",
+          "example": "it-nota-fisc.it-codigo + | + it-nota-fisc.cod-refer",
+          "description": "Concatenação do Código do Item com a Referência do Item, se tiver, separados por barra vertical"
+        },
+        "quantity": {
+          "type": "number",
+          "example": "it-nota-fisc.qt-faturada[1]",
+          "description": "Quantidade do item na Nota Fiscal"
+        },
+        "price": {
+          "type": "number",
+          "example": "it-nota-fisc.vl-tot-item",
+          "description": "Preço do item na Nota Fiscal"
+        }
+      }
+    },
   }
 }
