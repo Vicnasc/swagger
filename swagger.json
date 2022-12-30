@@ -1,9 +1,9 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "APIs públicas na plataforma TOTVS. Módulo Datasul QOP",
+    "description": "APIs públicas na plataforma TOTVS. Módulo Datasul CEP",
     "version": "1.0.0",
-    "title": "TOTVS - QOP",
+    "title": "TOTVS - CEP",
     "termsOfService": "https://www.totvs.com/termos-de-uso/",
     "contact": {
       "email": "box@totvs.com.br"
@@ -14,30 +14,107 @@
     }
   },
   "host": "gales:8180",
-  "basePath": "/dts/datasul-rest/resources/prg/qop/v1/",
+  "basePath": "/dts/datasul-rest/resources/prg/cep/v1/",
   "schemes": [
     "http",
     "https"
   ],
   "tags": [
     {
-      "name": "quotesPublic",
-      "description": "Cotação de Venda"
+      "name": "inventoryGroupsPublic",
+      "description": "Grupo de Estoque"
     },
     {
-      "name": "quoteItemsPublic",
-      "description": "Itens da Cotação de Venda"
+      "name": "materialFamiliesPublic",
+      "description": "Família de Material"
+    },
+    {
+      "name": "productPublic",
+      "description": "Item"
+    },
+    {
+      "name": "productSkuPublic",
+      "description": "Item SKU"
+    },
+    {
+      "name": "stockBalancePublic",
+      "description": "Saldo Estoque"
+    },
+    {
+      "name": "warehousePublic",
+      "description": "Depósitos"
     }
   ],
   "paths": {
-    "/quotesPublic": {
+    "/inventoryGroupsPublic": {
       "get": {
         "tags": [
-          "quotesPublic"
+          "inventoryGroupsPublic"
         ],
-        "summary": "Realiza a carga das Cotações de Venda",
-        "description": "Este serviço permite a visualização das Cotações de Venda. \r\n`Campos Indexados:` {salesChannel, paymentTerms, branchId, collectorCode, evaluationSituation, commercialSituation, quoteSituation, priceSituation, deliveryDate, implantationDate, modality, transactionType, representativeShortName, shortName, reshipmentTransp, carrierName, customerQuoteId, quoteId, priceTableQuote, priceQuoteType}",
-        "operationId": "getquotesPublic",
+        "summary": "Realiza a carga de Grupos de Estoque.",
+        "description": "Este serviço permite a visualização dos Grupos de Estoque.",
+        "operationId": "getinventoryGroupsPublic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/inventoryGroupsPublicResponse"
+            }
+          },
+          "400": {
+            "description": "Erro requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Não encontrado"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/productPublic": {
+      "get": {
+        "tags": [
+          "productPublic"
+        ],
+        "summary": "Realiza a carga dos Itens.",
+        "description": "Este serviço permite a visualização dos Itens. \r\n`Campos Indexados:` {taxClassification, auxiliaryCode, siteCode, obsolete, serviceCode, businessUnit, productDescription, businessFamily, familyCode, inventoryGroup, productCode, controlType, measureUnit}",
+        "operationId": "getproductPublic",
         "produces": [
           "application/json"
         ],
@@ -69,14 +146,14 @@
             "in": "query",
             "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
             "required": false,
-            "type":"boolean"
+            "type": "boolean"
           }
         ],
         "responses": {
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/quotesPublicResponse"
+              "$ref": "#/definitions/productPublicResponse"
             }
           },
           "400": {
@@ -97,323 +174,16 @@
             "basicAuth": []
           }
         ]
-      },
-      "post": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Inclusão da Cotação de Venda",
-        "description": "Este serviço permite a inclusão da Cotação de Venda.",
-        "operationId": "postquotesPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados do Cliente",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
       }
     },
-    "/quotesPublic/{quoteID}": {
-      "put": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Atualização de Cotação de Venda",
-        "description": "Este serviço permite a atualização da Cotação de Venda.",
-        "operationId": "putquotesPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados das Cotações de Venda",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Atualização da Cotação de Venda",
-        "description": "Este serviço permite a atualização da Cotação de Venda.",
-        "operationId": "patchquotesPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados das Cotações de Venda",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/quotesPublic"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Exclusão da Cotação de Venda",
-        "description": "Este serviço permite a exclusão da Cotação de Venda.",
-        "operationId": "deletequotesPublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser excluída",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso"
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/quotesPublic/release/{quoteID}": {
-      "put": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Libera a Cotação de Venda",
-        "description": "Este serviço permite liberar a Cotação de Venda.",
-        "operationId": "releasequotesPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser liberada",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso"
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/quotesPublic/cancel/{quoteID}": {
-      "put": {
-        "tags": [
-          "quotesPublic"
-        ],
-        "summary": "Cancela a Cotação de Venda",
-        "description": "Este serviço permite cancelar a Cotação de Venda.",
-        "operationId": "cancelquotesPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser cancelada",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso"
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      }
-    },
-    "/quoteItemsPublic": {
+    "/productPublic/ecommerce": {
       "get": {
         "tags": [
-          "quoteItemsPublic"
+          "productPublic"
         ],
-        "summary": "Realiza a carga dos Itens da Cotação de Venda",
-        "description": "Este serviço permite a visualização dos Itens da Cotação de Venda. \r\n`Campos Indexados:` {deliveryCode, referenceCode, quoteItemSituation, delireryDate, itemCode, shortName, customerQuoteId, sequence, priceTable}",
-        "operationId": "getquoteItemsPublic",
+        "summary": "Realiza a carga dos itens pertecentes a integração com a VTEX",
+        "description": "Este serviço permite a visualização dos itens VTEX.",
+        "operationId": "getProductStorePublic",
         "produces": [
           "application/json"
         ],
@@ -445,14 +215,14 @@
             "in": "query",
             "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
             "required": false,
-            "type":"boolean"
+            "type": "boolean"
           }
         ],
         "responses": {
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/quoteItemsPublicResponse"
+              "$ref": "#/definitions/productStorePublicResponse"
             }
           },
           "400": {
@@ -473,36 +243,55 @@
             "basicAuth": []
           }
         ]
-      },
-      "post": {
+      }
+    },
+    "/productSkuPublic/ecommerce": {
+      "get": {
         "tags": [
-          "quoteItemsPublic"
+          "productSkuPublic"
         ],
-        "summary": "Inclusão de Item da Cotação de Venda",
-        "description": "Este serviço permite a inclusão de Item da Cotação de Venda.",
-        "operationId": "postquoteItemsPublic",
-        "consumes": [
-          "application/json"
-        ],
+        "summary": "Realiza a carga dos SKU pertecentes a integração com a VTEX",
+        "description": "Este serviço permite a visualização dos SKU VTEX.",
+        "operationId": "getProductSkuStorePublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados do Cliente",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quoteItems"
-            }
+            "name": "lastUpdate",
+            "in": "query",
+            "description": "Data de sincronização dos registros",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/quoteItems"
+              "$ref": "#/definitions/productSkuStorePublicResponse"
             }
           },
           "400": {
@@ -514,8 +303,8 @@
           "404": {
             "description": "Não encontrado"
           },
-          "405": {
-            "description": "Dados inválidos"
+          "500": {
+            "description": "Erro interno do servidor"
           }
         },
         "security": [
@@ -525,52 +314,53 @@
         ]
       }
     },
-    "/quoteItemsPublic/{quoteID}/{sequence}": {
-      "put": {
+    "/stockBalancePublic": {
+      "get": {
         "tags": [
-          "quoteItemsPublic"
+          "stockBalancePublic"
         ],
-        "summary": "Atualização do Item da Cotação de Venda",
-        "description": "Este serviço permite a atualização do Item da Cotação de Venda.",
-        "operationId": "putquoteItemsPublic",
-        "consumes": [
-          "application/json"
-        ],
+        "summary": "Realiza a carga dos Saldos de Estoque.",
+        "description": "Este serviço permite a visualização dos Saldos de Estoque. \r\n`Campos Indexados:` {warehouseCode, siteCode, locationCode, referenceCode, expirationDate, itemCode, lot}",
+        "operationId": "getstockBalancePublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
+            "name": "lastMovto",
+            "in": "query",
+            "description": "Data de movimentação de estoque",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
           },
           {
-            "name": "sequence",
-            "in": "path",
-            "description": "Identificador da sequencia do Item da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
           },
           {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados do Item da Cotação de Venda",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quoteItems"
-            }
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
           "200": {
             "description": "Requisição realizada com sucesso",
             "schema": {
-              "$ref": "#/definitions/quoteItems"
+              "$ref": "#/definitions/stockBalancePublicResponse"
             }
           },
           "400": {
@@ -582,125 +372,8 @@
           "404": {
             "description": "Não encontrado"
           },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      },
-      "patch": {
-        "tags": [
-          "quoteItemsPublic"
-        ],
-        "summary": "Atualização do Item da Cotação de Venda",
-        "description": "Este serviço permite a atualização do Item da Cotação de Venda.",
-        "operationId": "patchquoteItemsPublic",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "sequence",
-            "in": "path",
-            "description": "Identificador da sequencia do Item da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Objeto com os dados do Item da Cotação de Venda",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/quoteItems"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso",
-            "schema": {
-              "$ref": "#/definitions/quoteItems"
-            }
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
-          }
-        },
-        "security": [
-          {
-            "basicAuth": []
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "quoteItemsPublic"
-        ],
-        "summary": "Exclusão do Item da Cotação de Venda",
-        "description": "Este serviço permite a exclusão do Item da Cotação de Venda.",
-        "operationId": "deletequoteItemsPublic",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "sequence",
-            "in": "path",
-            "description": "Identificador da sequencia do Item da Cotação de Venda a ser atualizado",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Requisição realizada com sucesso"
-          },
-          "400": {
-            "description": "Erro requisição inválida"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "404": {
-            "description": "Não encontrado"
-          },
-          "405": {
-            "description": "Dados inválidos"
+          "500": {
+            "description": "Erro interno do servidor"
           }
         },
         "security": [
@@ -710,41 +383,54 @@
         ]
       }
     },
-    "/quoteItemsPublic/cancel/{quoteID}/{sequence}": {
-      "put": {
+    "/stockBalancePublic/ecommerce": {
+      "get": {
         "tags": [
-          "quoteItemsPublic"
+          "stockBalancePublic"
         ],
-        "summary": "Cancelamento do Item da Cotação de Venda",
-        "description": "Este serviço permite cancelar o Item da Cotação de Venda.",
-        "operationId": "cancelquoteItemsPublic",
-        "consumes": [
-          "application/json"
-        ],
+        "summary": "Realiza a carga do saldo em estoque dos itens pertecentes a integração com a VTEX",
+        "description": "Este serviço permite a visualização do saldo em estoque dos itens VTEX.",
+        "operationId": "getStockBalanceStorePublic",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "quoteID",
-            "in": "path",
-            "description": "Identificador da Cotação de Venda a ser atualizada",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
+            "name": "lastUpdate",
+            "in": "query",
+            "description": "Data de sincronização dos registros",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
           },
           {
-            "name": "sequence",
-            "in": "path",
-            "description": "Identificador da sequencia do Item da Cotação de Venda a ser atualizada",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "responses": {
           "200": {
-            "description": "Requisição realizada com sucesso"
+            "description": "Requisição realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/stockBalanceStorePublicResponse"
+            }
           },
           "400": {
             "description": "Erro requisição inválida"
@@ -755,8 +441,130 @@
           "404": {
             "description": "Não encontrado"
           },
-          "405": {
-            "description": "Dados inválidos"
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/materialFamiliesPublic": {
+      "get": {
+        "tags": [
+          "materialFamiliesPublic"
+        ],
+        "summary": "Realiza a carga das Famílias de Materiais.",
+        "description": "Este serviço permite a visualização das Famílias de Materiais.",
+        "operationId": "getmaterialFamiliesPublic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/materialFamiliesPublicResponse"
+            }
+          },
+          "400": {
+            "description": "Erro requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Não encontrado"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ]
+      }
+    },
+    "/warehousePublic": {
+      "get": {
+        "tags": [
+          "warehousePublic"
+        ],
+        "summary": "Realiza a carga da lista de Depósitos.",
+        "description": "Este serviço permite a visualização da lista de Depósitos.",
+        "operationId": "getwarehousePublic",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Número da página",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Quantidade de registros por página (a resposta deve retornar o campo hasNext indicando se há mais registros para a proxima página), a quantidade não deve ultrapassar 100, quantidades superiores serão consideradas 100.",
+            "required": false,
+            "type": "integer"
+          },
+          {
+            "name": "totalCount",
+            "in": "query",
+            "description": "Considera a contagem total dos registros, respeitando os filtros anteriores.",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisição realizada com sucesso",
+            "schema": {
+              "$ref": "#/definitions/warehousePublicResponse"
+            }
+          },
+          "400": {
+            "description": "Erro requisição inválida"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "404": {
+            "description": "Não encontrado"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
           }
         },
         "security": [
@@ -773,9 +581,9 @@
     }
   },
   "definitions": {
-    "quotesPublicResponse": {
+    "inventoryGroupsPublicResponse": {
       "type": "object",
-      "description": "Resposta da requisição do serviço que retorna as Cotações de Venda cadastradas no ERP",
+      "description": "Resposta da requisição do serviço que retorna os Grupos de Estoque cadastrados no ERP",
       "properties": {
         "total": {
           "type": "integer",
@@ -785,17 +593,33 @@
           "type": "boolean"
         },
         "items": {
-          "description": "Lista contendo informações das Cotações de Venda cadastradas no ERP",
+          "description": "Lista contendo informações dos Grupos de Estoque cadastrados no ERP",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/quotesPublic"
+            "$ref": "#/definitions/inventoryGroupsPublic"
           }
         }
       }
     },
-    "quoteItemsPublicResponse": {
+    "inventoryGroupsPublic": {
       "type": "object",
-      "description": "Resposta da requisição do serviço que retorna os Itens da Cotação de Venda cadastrados no ERP",
+      "description": "Grupo de Estoque",
+      "properties": {
+        "code": {
+          "type": "number",
+          "example": "grup-estoque.ge-codigo",
+          "description": "Grupo de Estoque"
+        },
+        "description": {
+          "type": "string",
+          "example": "grup-estoque.descricao",
+          "description": "Descrição"
+        }
+      }
+    },
+    "stockBalancePublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna os Saldos de Estoque do item cadastrados no ERP",
       "properties": {
         "total": {
           "type": "integer",
@@ -805,795 +629,972 @@
           "type": "boolean"
         },
         "items": {
-          "description": "Lista contendo informações dos Itens das Cotações de Venda cadastrados no ERP",
+          "description": "Lista contendo informações dos Saldos de Estoque do item cadastrados no ERP",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/quoteItems"
+            "$ref": "#/definitions/stockBalancePublic"
           }
         }
       }
     },
-    "quotesPublic": {
+    "stockBalancePublic": {
       "type": "object",
-      "description": "Cotação de Venda",
+      "description": "Estoque do item",
       "properties": {
-        "allocationSituation": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-sit-pre",
-          "description": "Situação da alocação do estoque"
-        },
-        "branchId": {
-          "type": "string",
-          "example": "movdis.ped-venda.cod-estabel",
-          "description": "Código do estabelecimento"
-        },
-        "campaignId": {
-          "type": "integer",
-          "example": "movdis.ped-venda.num-id-campanha-crm",
-          "description": "Número Id Campanha Crm"
-        },
-        "cancellationDate": {
+        "expirationDate": {
           "type": "string",
           "format": "date",
-          "example": "movdis.ped-venda.dt-cancela",
-          "description": "Data do Cancelamento do Pedido"
-        },
-        "cancellationReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-cancela",
-          "description": "Descrição do motivo do cancelamento"
-        },
-        "carrierName": {
-          "type": "string",
-          "example": "movdis.ped-venda.nome-transp",
-          "description": "Nome do transportador"
-        },
-        "cifCity": {
-          "type": "string",
-          "example": "movdis.ped-venda.cidade-cif",
-          "description": "Até que cidade o frete corre por conta do emitente"
-        },
-        "codeCarrier": {
-          "type": "integer",
-          "example": "mgadm.transporte.cod-transp",
-          "description": "Código do Transportador"
-        },
-        "codeReshipmentTransp": {
-          "type": "integer",
-          "example": "mgadm.transporte.cod-transp",
-          "description": "Transportadora Redespacho"
-        },
-        "collectorCode": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-portador",
-          "description": "Código do portador"
-        },
-        "comments": {
-          "type": "string",
-          "example": "movdis.ped-venda.observacoes",
-          "description": "Observação"
-        },
-        "commercialSituation": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-sit-com",
-          "description": "Código da situação da avaliação comercial"
-        },
-        "completeAddress": {
-          "type": "string",
-          "example": "movdis.ped-venda.endereco_text",
-          "description": "Endereço Completo"
-        },
-        "creditApprovalDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-apr-cred",
-          "description": "Data de aprovação de crédito"
-        },
-        "creditLockReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-bloq-cr",
-          "description": "Motivo da não liberação de crédito para o pedido"
-        },
-        "currencyBillingCode": {
-          "type": "integer",
-          "example": "movdis.ped-venda.mo-fatur",
-          "description": "Código da moeda do Faturamento"
-        },
-        "currencyCode": {
-          "type": "integer",
-          "example": "movdis.ped-venda.mo-codigo",
-          "description": "Código da moeda de referência dos valores"
-        },
-        "customerCode": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-emitente",
-          "description": "Código do cliente"
-        },
-        "customerDiscount": {
-          "type": "number",
-          "example": "movdis.ped-venda.perc-desco1",
-          "description": "Percentual de desconto do cliente a ser aplicado sobre a nota"
-        },
-        "customerQuoteId": {
-          "type": "string",
-          "example": "movdis.ped-venda.nr-pedcli",
-          "description": "Número do pedido do cliente"
-        },
-        "customerQuoteType": {
-          "type": "string",
-          "example": "movdis.ped-venda.tp-pedido",
-          "description": "Disponível para classificação/indicação própria do usuário"
-        },
-        "dateUpdatedSituation": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dat-alter-sit",
-          "description": "Data da alteração da situação"
-        },
-        "deliveryCity": {
-          "type": "string",
-          "example": "movdis.ped-venda.cidade",
-          "description": "Cidade para a Entrega do Pedido"
-        },
-        "deliveryCode": {
-          "type": "string",
-          "example": "movdis.ped-venda.cod-entrega",
-          "description": "Código do endereço de entrega"
-        },
-        "deliveryCountry": {
-          "type": "string",
-          "example": "movdis.ped-venda.pais",
-          "description": "País de Entrega do Pedido"
-        },
-        "deliveryDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-entrega",
-          "description": "Data prevista para entrega do Pedido"
-        },
-        "deliveryNeighborhood": {
-          "type": "string",
-          "example": "movdis.ped-venda.bairro",
-          "description": "Bairro"
-        },
-        "deliveryPlace": {
-          "type": "string",
-          "example": "movdis.ped-venda.local-entreg",
-          "description": "Endereço de entrega do cliente"
-        },
-        "deliveryState": {
-          "type": "string",
-          "example": "movdis.ped-venda.estado",
-          "description": "Unidade da federação para entrega"
-        },
-        "deliveryZipCode": {
-          "type": "string",
-          "example": "movdis.ped-venda.cep",
-          "description": "CEP"
-        },
-        "discountAmt": {
-          "type": "number",
-          "example": "movdis.ped-venda.vl-desconto",
-          "description": "Valor do desconto"
-        },
-        "discountPercentage": {
-          "type": "string",
-          "example": "movdis.ped-venda.des-pct-desconto-inform",
-          "description": "Percentuais de desconto informados por pedido"
-        },
-        "email": {
-          "type": "string",
-          "example": "movdis.ped-venda.e-mail",
-          "description": "Endereço eletrônico na Internet"
-        },
-        "emissionDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-emissao",
-          "description": "Data em que o pedido foi emitido pelo representante/cliente"
-        },
-        "evaluationSituation": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-sit-aval",
-          "description": "Situação de avaliação de crédito"
-        },
-        "forcedApprover": {
-          "type": "string",
-          "example": "movdis.ped-venda.aprov-forcado",
-          "description": "Nome do aprovador de créditos forçados"
-        },
-        "forcedReleaseReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-forc-cr",
-          "description": "Motivo da liberação de crédito forçado para o pedido"
-        },
-        "freightMode": {
-          "type": "string",
-          "example": "movdis.ped-venda.char-2,109,8",
-          "description": "Modalidade de Frete"
-        },
-        "implantationDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-implant",
-          "description": "Data em que o Pedido foi implantado no sistema"
-        },
-        "limitBillingDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-lim-fat",
-          "description": "Data Limite para atendimento do Pedido"
-        },
-        "merchandiseDescription": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-des-merc",
-          "description": "Destino da mercadoria"
-        },
-        "minimumBillingDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-minfat",
-          "description": "Data Mínima para atendimento do Pedido"
-        },
-        "modality": {
-          "type": "integer",
-          "example": "movdis.ped-venda.modalidade",
-          "description": "Modalidade de cobrança referente ao portador"
-        },
-        "openAmount": {
-          "type": "number",
-          "example": "movdis.ped-venda.vl-liq-abe",
-          "description": "Valor da mercadoria em aberto + IPI do saldo aberto"
-        },
-        "operationTypeCode": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cdn-tip-ped",
-          "description": "Código do Tipo de Pedido"
-        },
-        "operationTypeDetail": {
-          "type": "string",
-          "example": "mgdis.tip-ped-cia.descricao",
-          "description": "Detalhe Tipo de Operação"
-        },
-        "originalDeliveryDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-entorig",
-          "description": "Data de entrega solicitada pelo cliente"
-        },
-        "paymentTerms": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-cond-pag",
-          "description": "Código da condição de pagamento"
-        },
-        "paymentTermsDetail": {
-          "type": "string",
-          "example": "mgadm.cond-pagto.descricao",
-          "description": "Detalhe Condição de Pagamento"
-        },
-        "percentageFreight": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-perc-frete",
-          "description": "Percentual de Frete"
-        },
-        "percentageInsurance": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-perc-seguro",
-          "description": "Percentual de Seguro"
-        },
-        "percentagePacking": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-perc-embal",
-          "description": "Percentual de Embalagem"
-        },
-        "priceQuoteType": {
-          "type": "integer",
-          "example": "movdis.ped-venda.tp-preco",
-          "description": "Tipo de preço"
-        },
-        "priceReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-lib-preco",
-          "description": "Motivo da liberação forçada dos preços para o pedido"
-        },
-        "priceSituation": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-sit-preco",
-          "description": "Código da situação da avaliação Preços"
-        },
-        "priceTableDiscPerc": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-pct-desconto-tab-preco",
-          "description": "Percentual de descontos referente à tabela de preços"
-        },
-        "priceTableQuote": {
-          "type": "string",
-          "example": "movdis.ped-venda.nr-tabpre",
-          "description": "Tabela de preços"
-        },
-        "priceTableQuoteDetail": {
-          "type": "string",
-          "example": "mgdis.tb-preco.descricao",
-          "description": "Detalhe Tabela de Preço"
-        },
-        "quoteAmount": {
-          "type": "number",
-          "example": "movdis.ped-venda.vl-liq-ped",
-          "description": "Valor líquido da mercadoria pedida"
-        },
-        "quoteCompleted": {
-          "type": "boolean",
-          "example": "movdis.ped-venda.completo",
-          "description": "O pedido está completo?"
-        },
-        "quoteId": {
-          "type": "integer",
-          "example": "movdis.ped-venda.nr-pedido",
-          "description": "Número do pedido"
-        },
-        "quoteSituation": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-sit-ped",
-          "description": "Situação do pedido"
-        },
-        "quoteType": {
-          "type": "integer",
-          "example": "movdis.ped-venda.esp-ped",
-          "description": "Espécie do pedido"
-        },
-        "reactivationDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-reativ",
-          "description": "Data de reativação"
-        },
-        "reactivationReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-reativa",
-          "description": "Informe o motivo da reativação do pedido."
-        },
-        "representativeName": {
-          "type": "string",
-          "example": "mgadm.repres.nome",
-          "description": "Nome do Representante principal"
-        },
-        "representativeQuoteId": {
-          "type": "string",
-          "example": "movdis.ped-venda.nr-pedrep",
-          "description": "Número do pedido do representante"
-        },
-        "representativeShortName": {
-          "type": "string",
-          "example": "movdis.ped-venda.no-ab-reppri",
-          "description": "Nome abreviado do representante principal"
-        },
-        "reshipmentTransp": {
-          "type": "string",
-          "example": "movdis.ped-venda.nome-tr-red",
-          "description": "Nome da transportadora de redespacho"
-        },
-        "salesChannel": {
-          "type": "integer",
-          "example": "movdis.ped-venda.cod-canal-venda",
-          "description": "Código do canal de venda"
-        },
-        "shortName": {
-          "type": "string",
-          "example": "movdis.ped-venda.nome-abrev",
-          "description": "Nome abreviado do cliente"
-        },
-        "suspensionDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-venda.dt-suspensao",
-          "description": "Data de suspensão"
-        },
-        "suspensionReason": {
-          "type": "string",
-          "example": "movdis.ped-venda.desc-suspend",
-          "description": "Motivo da suspensão do pedido"
-        },
-        "totalDiscount": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-desconto-total",
-          "description": "Valor do desconto total"
-        },
-        "totalDiscountPercentage": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-pct-desconto-total",
-          "description": "Percentual de desconto total do pedido"
-        },
-        "totalDiscountValue": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-pct-desconto-valor",
-          "description": "Percentual de desconto por valor do pedido"
-        },
-        "totalQuoteAmount": {
-          "type": "number",
-          "example": "movdis.ped-venda.vl-tot-ped",
-          "description": "Valor total da mercadoria pedida adicionada do IPI"
-        },
-        "transactionType": {
-          "type": "string",
-          "example": "movdis.ped-venda.nat-operacao",
-          "description": "Natureza de operação"
-        },
-        "unitBusinessCod": {
-          "type": "string",
-          "example": "movdis.ped-venda.cod-unid-negoc",
-          "description": "Código Unidade Negócio"
-        },
-        "useBillingAddress": {
-          "type": "boolean",
-          "example": "movdis.ped-venda.ind-ender-fatur",
-          "description": "Indica se o endereço será usado no faturamento do pedido."
-        },
-        "useDiscountTable": {
-          "type": "boolean",
-          "example": "movdis.ped-venda.log-usa-tabela-desconto",
-          "description": "Usa a tabela de descontos no tratamento deste pedido?"
-        },
-        "userApprover": {
-          "type": "string",
-          "example": "movdis.ped-venda.user-aprov",
-          "description": "Usuário que aprovou o pedido"
-        },
-        "userCancel": {
-          "type": "string",
-          "example": "movdis.ped-venda.user-canc",
-          "description": "Usuário que efetuou o cancelamento"
-        },
-        "userCreditApprover": {
-          "type": "string",
-          "example": "movdis.ped-venda.quem-aprovou",
-          "description": "Usuário que aprovou o crédito"
-        },
-        "userLastChange": {
-          "type": "string",
-          "example": "movdis.ped-venda.user-alte",
-          "description": "Usuário que efetuou a última alteração"
-        },
-        "userUpdatedSituation": {
-          "type": "string",
-          "example": "movdis.ped-venda.cod-usu-alt-sit",
-          "description": "Usuário de alteração da situação"
-        },
-        "valueFreight": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-frete",
-          "description": "Informe o valor do frete"
-        },
-        "valueInsurance": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-seguro",
-          "description": "Informe o valor do seguro"
-        },
-        "valuePacking": {
-          "type": "number",
-          "example": "movdis.ped-venda.val-embal",
-          "description": "Informe o valor da embalagem"
-        },
-        "quoteItems": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/quoteItems"
-          },
-          "description": "Itens da Cotação de Venda."
-        }
-      }
-    },
-    "quoteItems": {
-      "type": "object",
-      "description": "Itens da Cotação de Venda",
-      "properties": {
-        "aliquot": {
-          "type": "number",
-          "example": "movdis.ped-item.aliquota-ipi",
-          "description": "Alíquota de IPI"
-        },
-        "allocationSituation": {
-          "type": "integer",
-          "example": "movdis.ped-item.cod-sit-pre",
-          "description": "Situação da alocação do estoque"
-        },
-        "campaignId": {
-          "type": "integer",
-          "example": "movdis.ped-item.num-id-campanha-crm",
-          "description": "Número Id Campanha Crm"
-        },
-        "cancelationItemDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-usercan",
-          "description": "Data em que o Item foi cancelado"
-        },
-        "cancelationUser": {
-          "type": "string",
-          "example": "movdis.ped-item.user-canc",
-          "description": "Código do usuário que cancelou o item"
-        },
-        "comments": {
-          "type": "string",
-          "example": "movdis.ped-item.observacao",
-          "description": "Observação do item do pedido"
-        },
-        "commercialSituation": {
-          "type": "integer",
-          "example": "movdis.ped-item.cod-sit-com",
-          "description": "Código da situação da avaliação comercial"
-        },
-        "customerQuoteId": {
-          "type": "string",
-          "example": "movdis.ped-item.nr-pedcli",
-          "description": "Número do pedido do cliente"
-        },
-        "dateCancel": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-canseq",
-          "description": "Data de Cancelamento da seqüência do pedido"
-        },
-        "dateDevol": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-devolucao",
-          "description": "Data de devolução"
-        },
-        "delireryDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-entrega",
-          "description": "Data de entrega do item do Pedido"
-        },
-        "deliveryCode": {
-          "type": "string",
-          "example": "movdis.ped-item.cod-entrega",
-          "description": "Código do endereço de entrega"
-        },
-        "descCancel": {
-          "type": "string",
-          "example": "movdis.ped-item.desc-cancela",
-          "description": "Descrição do motivo do Cancelamento"
-        },
-        "descDevol": {
-          "type": "string",
-          "example": "movdis.ped-item.desc-devol",
-          "description": "Motivo da devolução"
-        },
-        "devolutionItemDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-userdev",
-          "description": "Data em que ocorreu a devolução"
-        },
-        "devolutionUser": {
-          "type": "string",
-          "example": "movdis.ped-item.user-devol",
-          "description": "Usuário que efetuou a devolução"
-        },
-        "discountPercentage": {
-          "type": "string",
-          "example": "movdis.ped-item.des-pct-desconto-inform",
-          "description": "Percentuais de desconto informados por item do pedido"
-        },
-        "discountPrice": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-desconto",
-          "description": "Valor do desconto"
-        },
-        "informedDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-desconto-inform",
-          "description": "Valor do desconto informado"
-        },
-        "insurancePrice": {
-          "type": "number",
-          "example": "movdis.ped-item.val-seguro",
-          "description": "Informe o valor do seguro"
+          "example": "saldo-estoq.dt-vali-lote",
+          "description": "Validade Lote"
         },
         "itemCode": {
           "type": "string",
-          "example": "movdis.ped-item.it-codigo",
-          "description": "Código do item"
+          "example": "saldo-estoq.it-codigo",
+          "description": "Item"
         },
-        "itemDescription": {
-          "type": "string",
-          "example": "movdis.item.desc-item",
-          "description": "Descrição do Item"
-        },
-        "itemPercentageDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.per-des-item",
-          "description": "Percentual de desconto sobre o preço unitário"
-        },
-        "lastChangeUser": {
-          "type": "string",
-          "example": "movdis.ped-item.user-alte",
-          "description": "Código do último usuário a alterar o item do pedido"
-        },
-        "liquidMerchandise": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-liq-it",
-          "description": "Valor líquido da mercadoria"
-        },
-        "msrUnit": {
-          "type": "string",
-          "example": "movdis.ped-item.cod-un",
-          "description": "Unidade Medida"
-        },
-        "openAmount": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-liq-abe",
-          "description": "Valor total em aberto do item de pedido"
-        },
-        "openLiquidMerchandise": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-merc-abe",
-          "description": "Valor líquido da mercadoria em aberto"
-        },
-        "originalDeliveryDate": {
+        "lastCountDate": {
           "type": "string",
           "format": "date",
-          "example": "movdis.ped-item.dt-entorig",
-          "description": "Data de entrega solicitada pelo cliente"
+          "example": "saldo-estoq.dt-ul-contag",
+          "description": "Ultima Contagem"
         },
-        "originalPrice": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-preori",
-          "description": "Preço informado ou de tabela multiplicado pelo índice de financ"
-        },
-        "originalPriceBilling": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-preori-un-fat",
-          "description": "Preço Original na Unidade de Medida de Faturamento"
-        },
-        "periodDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-pct-desconto-periodo",
-          "description": "Percentual de desconto referente ao período controlado"
-        },
-        "priceSituation": {
-          "type": "integer",
-          "example": "movdis.ped-item.cod-sit-preco",
-          "description": "Código da situação da avaliação de preços"
-        },
-        "priceTable": {
+        "locationCode": {
           "type": "string",
-          "example": "movdis.ped-item.nr-tabpre",
-          "description": "Tabela de preços"
+          "example": "saldo-estoq.cod-localiz",
+          "description": "Localização"
         },
-        "priceTableDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-pct-desconto-tab-preco",
-          "description": "Percentual de descontos em quantidade da tabela de preços"
-        },
-        "priceTableValue": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-pretab",
-          "description": "Preço de tabela ou informado caso não exista tabela de preços"
-        },
-        "priceUnitary": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-preuni",
-          "description": "Preço unitário líquido (preço original - descontos)"
-        },
-        "purchaseOrder": {
+        "lot": {
           "type": "string",
-          "example": "movdis.ped-item.cod-ord-compra",
-          "description": "Número da ordem de compra do item, originário do pedido compra."
+          "example": "saldo-estoq.lote",
+          "description": "Lote/Série"
         },
-        "quantityAttentive": {
-          "type": "number",
-          "example": "movdis.ped-item.qt-atendida",
-          "description": "Quantidade faturada para o item no pedido"
-        },
-        "quantityBilling": {
-          "type": "number",
-          "example": "movdis.ped-item.qt-un-fat",
-          "description": "Quantidade na UM utilizada para Faturamento do Item"
-        },
-        "quantityPending": {
-          "type": "number",
-          "example": "movdis.ped-item.qt-pendente",
-          "description": "Quantidade faturada a ser atualizada como atendida"
-        },
-        "quantityRequested": {
-          "type": "number",
-          "example": "movdis.ped-item.qt-pedida",
-          "description": "Quantidade solicitada do Item no pedido de compra ou venda"
-        },
-        "quoteItemSituation": {
-          "type": "integer",
-          "example": "movdis.ped-item.cod-sit-item",
-          "description": "Situação do item"
-        },
-        "reactivationDate": {
+        "manufacturingDate": {
           "type": "string",
           "format": "date",
-          "example": "movdis.ped-item.dt-reativ",
-          "description": "Data de reativação"
+          "example": "saldo-estoq.dt-fabric",
+          "description": "Data de fabricação"
+        },
+        "qtyAllocated": {
+          "type": "number",
+          "example": "saldo-estoq.qt-alocada",
+          "description": "Quantidade Alocada do item pela preparação do faturamento"
+        },
+        "qtyAllocOrder": {
+          "type": "number",
+          "example": "saldo-estoq.qt-aloc-ped",
+          "description": "Quantidade alocada do item no pedido"
+        },
+        "qtyAllocProd": {
+          "type": "number",
+          "example": "saldo-estoq.qt-aloc-prod",
+          "description": "Quantidade alocada do item na produção"
+        },
+        "qtyAvailBalance": {
+          "type": "number",
+          "example": "saldo-estoq.qtidade-atu",
+          "description": "Qtde Atual"
         },
         "referenceCode": {
           "type": "string",
-          "example": "movdis.ped-item.cod-refer",
-          "description": "Código de referência do item"
+          "example": "saldo-estoq.cod-refer",
+          "description": "Referência"
+        },
+        "siteCode": {
+          "type": "string",
+          "example": "saldo-estoq.cod-estabel",
+          "description": "Estabelecimento"
+        },
+        "warehouseCode": {
+          "type": "string",
+          "example": "saldo-estoq.cod-depos",
+          "description": "Depósito"
+        }
+      }
+    },
+    "stockBalanceStorePublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna os saldos em estoque dos itens cadastrados no ERP pertencentes a integração VTEX",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações os saldos em estoque dos itens cadastrados no ERP pertencentes a integração VTEX",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/stockBalanceStorePublic"
+          }
+        }
+      }
+    },
+    "stockBalanceStorePublic": {
+      "type": "object",
+      "description": "Estoque do item",
+      "properties": {
+        "itemCode": {
+          "type": "string",
+          "example": "movind.saldo-estoq.it-codigo",
+          "description": "Chave ERP - Código do item + código da referência do item (ref-item.cod-refer) quando item possui referência - Exemplo iphone|branco. Quando o item não possuir referência é gravado apenas o código do item."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Saldo em estoque do item"
+        },
+        "referenceCode": {
+          "type": "string",
+          "example": "movind.saldo-estoq.cod-refer",
+          "description": "Referência"
+        },
+        "branchCode": {
+          "type": "string",
+          "example": "movind.saldo-estoq.cod-estabel",
+          "description": "Estabelecimento"
+        },
+        "warehouseCode": {
+          "type": "string",
+          "example": "movind.saldo-estoq.cod-depos",
+          "description": "Depósito"
+        },
+        "erpLastChange": {
+          "type": "string",
+          "format": "date-time",
+          "example": "movind.movto-estoq.dt-trans",
+          "description": "Data e hora da última alteração"
+        }
+      }
+    },
+    "productPublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna os Itens cadastrados no ERP",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações dos Itens cadastrados no ERP",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productPublic"
+          }
+        }
+      }
+    },
+    "productPublic": {
+      "type": "object",
+      "description": "Item",
+      "properties": {
+        "auxiliaryCode": {
+          "type": "string",
+          "example": "item.cod-auxiliar",
+          "description": "Código auxiliar de acesso. Exemplo: código senha."
+        },
+        "basePrice": {
+          "type": "number",
+          "example": "item.preco-base",
+          "description": "Preço Base"
+        },
+        "billable": {
+          "type": "boolean",
+          "example": "item.ind-item-fat",
+          "description": "Indica se o item pode ser faturado"
+        },
+        "businessFamily": {
+          "type": "string",
+          "example": "item.fm-cod-com",
+          "description": "Família comercial a qual pertence o item"
+        },
+        "businessUnit": {
+          "type": "string",
+          "example": "item.cod-unid-negoc",
+          "description": "Código da Unidade de Negócio"
+        },
+        "comments": {
+          "type": "string",
+          "example": "item.narrativa",
+          "description": "Narrativa"
+        },
+        "complInformation": {
+          "type": "string",
+          "example": "item.inform-compl",
+          "description": "Inf Complementar"
+        },
+        "controlType": {
+          "type": "integer",
+          "example": "item.tipo-contr",
+          "description": "Tipo de controle do item"
+        },
+        "conversionFactor": {
+          "type": "number",
+          "example": "item.ft-conversao",
+          "description": "Fator de conversão para unidade de medida padrão da família"
+        },
+        "deploymentDate": {
+          "type": "string",
+          "format": "date",
+          "example": "item.data-implant",
+          "description": "Data Implantação"
+        },
+        "familyCode": {
+          "type": "string",
+          "example": "item.fm-codigo",
+          "description": "Família de material a que pertence o item"
+        },
+        "grossWeight": {
+          "type": "number",
+          "example": "item.peso-bruto",
+          "description": "Peso Bruto Unitário do Item"
+        },
+        "height": {
+          "type": "number",
+          "example": "item.altura",
+          "description": "Altura da peça/item em centímetros"
+        },
+        "image": {
+          "type": "string",
+          "example": "item.cod-imagem",
+          "description": "Imagem"
+        },
+        "internalDescription": {
+          "type": "string",
+          "example": "item.desc-nacional",
+          "description": "Descrição Nacional"
+        },
+        "intlDescription": {
+          "type": "string",
+          "example": "item.desc-inter",
+          "description": "Descrição Internacional"
+        },
+        "inventoryGroup": {
+          "type": "integer",
+          "example": "item.ge-codigo",
+          "description": "Grupo de estoque a que pertence o item"
+        },
+        "itemClassification": {
+          "type": "integer",
+          "example": "item.idi-classif-item",
+          "description": "Classifica o item em genérico, produto ou insumo"
+        },
+        "length": {
+          "type": "number",
+          "example": "item.comprim",
+          "description": "Comprimento da peça/item em centímetros"
+        },
+        "measureUnit": {
+          "type": "string",
+          "example": "item.un",
+          "description": "Unidade de medida do item"
+        },
+        "minimumLot": {
+          "type": "number",
+          "example": "item.lote-minimo",
+          "description": "Lote mínimo para compra"
+        },
+        "movementStock": {
+          "type": "boolean",
+          "example": "item.baixa-estoq",
+          "description": "Indica se o item deverá ser baixado do estoque"
+        },
+        "multipleBatch": {
+          "type": "number",
+          "example": "item.lote-multipl",
+          "description": "Lote Múltiplo"
+        },
+        "multipleSaleLot": {
+          "type": "number",
+          "example": "item.lote-mulven",
+          "description": "Lote múltiplo de venda do item"
+        },
+        "netWeight": {
+          "type": "number",
+          "example": "item.peso-liquido",
+          "description": "Peso líquido do item"
+        },
+        "obsolete": {
+          "type": "integer",
+          "example": "item.cod-obsoleto",
+          "description": "Situação"
+        },
+        "obsoleteDate": {
+          "type": "string",
+          "format": "date",
+          "example": "item.data-obsol",
+          "description": "Data em que o item se tornou obsoleto"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "item.it-codigo",
+          "description": "Código do Item"
+        },
+        "productDescription": {
+          "type": "string",
+          "example": "item.desc-item",
+          "description": "Descrição"
+        },
+        "serviceCode": {
+          "type": "integer",
+          "example": "item.cod-servico",
+          "description": "Código de serviço definido pela legislação municipal"
+        },
+        "siteCode": {
+          "type": "string",
+          "example": "item.cod-estabel",
+          "description": "Estabelecimento padrão do item"
+        },
+        "sourceCode": {
+          "type": "integer",
+          "example": "item.cd-origem",
+          "description": "Origem"
+        },
+        "stockType": {
+          "type": "integer",
+          "example": "item.tipo-con-est",
+          "description": "Tipo de Controle de Estoque do Item"
+        },
+        "taxClassification": {
+          "type": "string",
+          "example": "item.class-fiscal",
+          "description": "Classificação Fiscal"
+        },
+        "width": {
+          "type": "number",
+          "example": "item.largura",
+          "description": "Largura da peça/item em centímetros"
+        },
+        "lastUpdate": {
+          "type": "string",
+          "format": "datetime",
+          "example": "item-log.dtm-alter",
+          "description": "data e hora da última alteração"
+        },
+        "businessFamilyDescription": {
+          "type": "string",
+          "example": "fam-comerc.fm-cod-com",
+          "description": "Descrição da Família Comercial"
+        },
+        "familyCodeDescription": {
+          "type": "string",
+          "example": "familia.fm-codigo",
+          "description": "Descrição da Família de Material"
+        },        
+        "productReferences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productReferences"
+          },
+          "description": "Referências do Item."
+        },
+        "altComponent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/altComponent"
+          },
+          "description": "Componentes Alternativos."
+        },
+        "productPacking": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productPacking"
+          },
+          "description": "Embalagens do Item."
+        },
+        "productSiteCost": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productSiteCost"
+          },
+          "description": "Itens do Estabelecimento."
+        },
+        "productSite": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productSite"
+          },
+          "description": "Parametros Itens x Estabelecimento."
+        }
+      }
+    },
+    "productReferences": {
+      "type": "object",
+      "description": "Referências do Item",
+      "properties": {
+        "EANCode": {
+          "type": "string",
+          "example": "ref-item.cod-ean",
+          "description": "Código EAN"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "ref-item.it-codigo",
+          "description": "Código do Item"
+        },
+        "referenceCode": {
+          "type": "string",
+          "example": "ref-item.cod-refer",
+          "description": "Código da referência"
+        },
+        "referenceDescription": {
+          "type": "string",
+          "example": "referencia.descricao",
+          "description": "Descrição da referência"
+        }
+      }
+    },
+    "altComponent": {
+      "type": "object",
+      "description": "Componentes Alternativos",
+      "properties": {
+        "alternativeCode": {
+          "type": "string",
+          "example": "alternativo.al-codigo",
+          "description": "Componente Alternativo"
+        },
+        "componentCode": {
+          "type": "string",
+          "example": "alternativo.es-codigo",
+          "description": "Componente"
+        },
+        "order": {
+          "type": "integer",
+          "example": "alternativo.ordem",
+          "description": "Ordem de prioridade de utilização do componente alternativo"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "alternativo.it-codigo",
+          "description": "Item"
+        },
+        "qtyComponent": {
+          "type": "number",
+          "example": "alternativo.qtd-compon",
+          "description": "Quantidade componente para quantidade referência item"
+        },
+        "qtyProduct": {
+          "type": "number",
+          "example": "alternativo.qtd-item",
+          "description": "Quantidade base do item pai"
+        },
+        "qtyUsed": {
+          "type": "number",
+          "example": "alternativo.quant-usada",
+          "description": "Quantidade bruta utilizada do componente alternativo"
         },
         "sequence": {
           "type": "integer",
-          "example": "movdis.ped-item.nr-sequencia",
-          "description": "Número de seqüência do item no pedido"
+          "example": "alternativo.sequencia",
+          "description": "Seq"
+        }
+      }
+    },
+    "productPacking": {
+      "type": "object",
+      "description": "Embalagens do Item",
+      "properties": {
+        "packingCode": {
+          "type": "string",
+          "example": "item-caixa.sigla-emb",
+          "description": "Sigla da embalagem"
+        },
+        "packingDescription": {
+          "type": "string",
+          "example": "embalag.desc-emb",
+          "description": "Descrição da embalagem"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "item-caixa.it-codigo",
+          "description": "Código do item"
+        },
+        "qtyProduct": {
+          "type": "number",
+          "example": "item-caixa.qt-item",
+          "description": "Quantidade de itens na embalagem"
+        }
+      }
+    },
+    "productSiteCost": {
+      "type": "object",
+      "description": "Itens do Estabelecimento",
+      "properties": {
+        "batchDate": {
+          "type": "string",
+          "format": "date",
+          "example": "item-estab.mensal-ate",
+          "description": "Data do médio batch"
+        },
+        "batchGGFValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-ggf-m",
+          "description": "Valor Unit GGF Batch"
+        },
+        "batchMatValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mat-m",
+          "description": "Valor Unit Mat Batch"
+        },
+        "batchMOBValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mob-m",
+          "description": "Valor Unit Mob Batch"
+        },
+        "onlineDate": {
+          "type": "string",
+          "format": "date",
+          "example": "item-estab.on-line-ate",
+          "description": "Data do médio on-line"
+        },
+        "onlineGGFValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-ggf-o",
+          "description": "Valor Unit GGF On-line"
+        },
+        "onlineMatValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mat-o",
+          "description": "Valor Unit Mat On-line"
+        },
+        "onlineMOBValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mob-o",
+          "description": "Valor Unit Mob On-line"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "item-estab.it-codigo",
+          "description": "Item"
+        },
+        "siteCode": {
+          "type": "string",
+          "example": "item-estab.cod-estabel",
+          "description": "Estabelecimento"
+        },
+        "standardDate": {
+          "type": "string",
+          "format": "date",
+          "example": "item-estab.padrao-ate",
+          "description": "Data do padrão"
+        },
+        "standardGGFValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-ggf-p",
+          "description": "Valor Unit GGF Padrão"
+        },
+        "standardMatValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mat-p",
+          "description": "Valor Unit Mat Padrão"
+        },
+        "standardMOBValue": {
+          "type": "number",
+          "example": "item-estab.val-unit-mob-p",
+          "description": "Valor Unit Mob Padrão"
+        },
+        "warehouseCode": {
+          "type": "string",
+          "example": "item-estab.deposito-pad",
+          "description": "Depósito"
+        }
+      }
+    },
+    "productSite": {
+      "type": "object",
+      "description": "Parametros Itens x Estabelecimento",
+      "properties": {
+        "basePrice": {
+          "type": "number",
+          "example": "item-uni-estab.preco-base",
+          "description": "Preço Base"
+        },
+        "billable": {
+          "type": "boolean",
+          "example": "item-uni-estab.ind-item-fat",
+          "description": "Indica se o item pode ser faturado"
+        },
+        "businessUnit": {
+          "type": "string",
+          "example": "item-uni-estab.cod-unid-negoc",
+          "description": "Código Unidade Negócio"
+        },
+        "EANCode": {
+          "type": "string",
+          "example": "item-uni-estab.ean-code",
+          "description": "Código de identificação padrão do item"
+        },
+        "economicLot": {
+          "type": "number",
+          "example": "item-uni-estab.lote-economi",
+          "description": "Lote Econômico"
+        },
+        "minimumLot": {
+          "type": "number",
+          "example": "item-uni-estab.lote-minimo",
+          "description": "Lote mínimo para compra"
+        },
+        "multipleBatch": {
+          "type": "number",
+          "example": "item-uni-estab.lote-multipl",
+          "description": "Lote Múltiplo"
+        },
+        "multipleSaleLot": {
+          "type": "number",
+          "example": "item-uni-estab.lote-mulven",
+          "description": "Lote múltiplo de venda do item"
+        },
+        "negativeBalance": {
+          "type": "integer",
+          "example": "item-uni-estab.perm-saldo-neg",
+          "description": "Permite parametrizar o Tipo de Saldo"
+        },
+        "obsolete": {
+          "type": "integer",
+          "example": "item-uni-estab.cod-obsoleto",
+          "description": "Situação"
+        },
+        "productCode": {
+          "type": "string",
+          "example": "item-uni-estab.it-codigo",
+          "description": "Código do item"
+        },
+        "siteCode": {
+          "type": "string",
+          "example": "item-uni-estab.cod-estabel",
+          "description": "Código do Estabelecimento"
+        }
+      }
+    },
+    "productStorePublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna os itens cadastrados no ERP pertecentes a integração VTEX",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações dos Itens cadastrados no ERP",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productStorePublic"
+          }
+        }
+      }
+    },
+    "productStorePublic": {
+      "type": "object",
+      "description": "Item",
+      "properties": {
+        "categoryCode": {
+          "type": "string",
+          "example": "mgind.item.fm-cod-com",
+          "description": "Família comercial a qual pertence o item"
+        },
+        "itemDescription": {
+          "type": "string",
+          "example": "mgind.item.desc-item",
+          "description": "Descrição do item"
+        },
+        "itemCode": {
+          "type": "string",
+          "example": "mgind.item.it-codigo",
+          "description": "Código do item"
+        },
+        "isActive": {
+          "type": "boolean",
+          "example": "mgind.item.cod-obsoleto",
+          "description": "Situção do item"
+        },
+        "erpLastChange": {
+          "type": "string",
+          "format": "date-time",
+          "example": "mgind.item-log.dtm-alter",
+          "description": "Data e hora da última alteração"
+        }
+      }
+    },
+    "productSkuStorePublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna os SKU´s cadastrados no ERP pertecentes a integração VTEX",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações dos SKU´s cadastrados no ERP",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/productSkuStorePublic"
+          }
+        }
+      }
+    },
+    "productSkuStorePublic": {
+      "type": "object",
+      "description": "Item",
+      "properties": {
+        "referenceCode": {
+          "type": "string",
+          "example": "mgind.item.cod-refer",
+          "description": "Referência do item"
+        },
+        "itemDescription": {
+          "type": "string",
+          "example": "mgind.item.desc-item",
+          "description": "Descrição do item"
+        },
+        "itemCode": {
+          "type": "string",
+          "example": "mgind.item.it-codigo",
+          "description": "Chave ERP - Código do item + código da referência do item (ref-item.cod-refer) quando item possui referência - Exemplo iphone|branco. Quando o item não possuir referência é gravado apenas o código do item."
+        },
+        "barCode": {
+          "type": "string",
+          "example": "mgind.item-mat.cod-ean",
+          "description": "Código GTIN/EAN do item"
+        },
+        "isActive": {
+          "type": "boolean",
+          "example": "mgind.item.cod-obsoleto",
+          "description": "Situção do item"
+        },
+        "length": {
+          "type": "number",
+          "example": "mgind.item.comprim",
+          "description": "Comprimento da peça/item em centímetros"
+        },
+        "height": {
+          "type": "number",
+          "example": "mgind.item.altura",
+          "description": "Altura da peça/item em centímetros"
+        },
+        "width": {
+          "type": "number",
+          "example": "mgind.item.largura",
+          "description": "Largura da peça/item em centímetros"
+        },
+        "weight": {
+          "type": "number",
+          "example": "mgind.item.peso-liquido",
+          "description": "Peso líquido do item"
+        },
+        "realWeight": {
+          "type": "number",
+          "example": "mgind.item.peso-bruto",
+          "description": "Peso bruto do item"
+        },
+        "measurementUnit": {
+          "type": "string",
+          "example": "mgind.item.un",
+          "description": "Unidade de medida do item"
+        },
+        "productRootCode": {
+          "type": "string",
+          "example": "mgind.item.it-codigo",
+          "description": "Código do item raiz"
+        },
+        "erpLastChange": {
+          "type": "string",
+          "format": "date-time",
+          "example": "mgind.item-log.dtm-alter",
+          "description": "Data e hora da última alteração"
+        }
+      }
+    },
+    "materialFamiliesPublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna as Famílias de Materiais cadastrados no ERP",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações das Famílias de Materiais cadastrados no ERP",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/materialFamiliesPublic"
+          }
+        }
+      }
+    },
+    "materialFamiliesPublic": {
+      "type": "object",
+      "description": "Família de Material",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "familia.fm-codigo",
+          "description": "Código da Família de Material"
+        },
+        "description": {
+          "type": "string",
+          "example": "familia.descricao",
+          "description": "Descrição"
+        },
+        "measureUnit": {
+          "type": "string",
+          "example": "familia.un",
+          "description": "Unidade Padrão da Família"
+        },
+        "measureUnitDetail": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/measureUnit"
+          },
+          "description": "Unidade de Medida."
+        }
+      }
+    },
+    "measureUnit": {
+      "type": "object",
+      "description": "Unidade de Medida",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "tab-unidade.un",
+          "description": "Unid Medid"
+        },
+        "descDimension": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Dimensão"
+        },
+        "description": {
+          "type": "string",
+          "example": "tab-unidade.descricao",
+          "description": "Descrição"
+        },
+        "dimensionCode": {
+          "type": "integer",
+          "example": "tab-unidade.dimensao",
+          "description": "Dimensão"
+        },
+        "fiscalAcronym": {
+          "type": "string",
+          "example": "-",
+          "description": "Abreviatura Fiscal"
+        }
+      }
+    },
+    "warehousePublicResponse": {
+      "type": "object",
+      "description": "Resposta da requisição do serviço que retorna a lista de Depósitos cadastrados no ERP",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "description": "Quantidade de registros"
+        },
+        "hasNext": {
+          "type": "boolean"
+        },
+        "items": {
+          "description": "Lista contendo informações da lista de Depósitos cadastrados no ERP",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/warehousePublic"
+          }
+        }
+      }
+    },
+    "warehousePublic": {
+      "type": "object",
+      "description": "Depósito",
+      "properties": {
+        "allocWmsQty": {
+          "type": "boolean",
+          "example": "deposito.log-aloca-qtd-wms",
+          "description": "Indica se os armazenamentos no WMS devem alocar saldos no ERP."
+        },
+        "code": {
+          "type": "string",
+          "example": "deposito.cod-depos",
+          "description": "Depósito"
+        },
+        "considerMrpOrders": {
+          "type": "boolean",
+          "example": "deposito.log-ordens-mrp",
+          "description": "Considera ordens no MRP quando não considera saldo do depósito"
+        },
+        "customerCode": {
+          "type": "integer",
+          "example": "-",
+          "description": "Código do emitente"
+        },
+        "descWarehouseType": {
+          "type": "string",
+          "example": "-",
+          "description": "Descrição Tipo de Depósito"
+        },
+        "finishedProdWarehouse": {
+          "type": "boolean",
+          "example": "deposito.ind-acabado",
+          "description": "Depósito de produtos acabados"
+        },
+        "includeAllocBalance": {
+          "type": "boolean",
+          "example": "deposito.alocado",
+          "description": "Considera saldo para alocação"
+        },
+        "includeAvailBalance": {
+          "type": "boolean",
+          "example": "deposito.cons-saldo",
+          "description": "Considera Saldo Disponível"
+        },
+        "name": {
+          "type": "string",
+          "example": "deposito.nome",
+          "description": "Descrição do Depósito"
+        },
+        "processWarehouse": {
+          "type": "boolean",
+          "example": "deposito.ind-processo",
+          "description": "Depósito de processo"
+        },
+        "QcWarehouse": {
+          "type": "boolean",
+          "example": "deposito.ind-dep-cq",
+          "description": "Depósito de Controle de Qualidade"
+        },
+        "recycledWarehouse": {
+          "type": "boolean",
+          "example": "deposito.log-reciclagem",
+          "description": "Depósito para material reciclado"
+        },
+        "scrapWarehouse": {
+          "type": "boolean",
+          "example": "deposito.ind-dep-rej",
+          "description": "Depósito de Rejeitos"
         },
         "shortName": {
           "type": "string",
-          "example": "movdis.ped-item.nome-abrev",
-          "description": "Nome abreviado do cliente"
+          "example": "deposito.nome-abrev",
+          "description": "Nome abreviado do destinatário em remessa para deposito externo"
         },
-        "suspensionDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-suspensao",
-          "description": "Data de suspensão"
-        },
-        "suspensionItemDate": {
-          "type": "string",
-          "format": "date",
-          "example": "movdis.ped-item.dt-usersusp",
-          "description": "Data de suspensão"
-        },
-        "termDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-pct-desconto-prazo",
-          "description": "Percentual de desconto referente ao prazo de pagamento"
-        },
-        "totalQuoteItemAmount": {
-          "type": "number",
-          "example": "movdis.ped-item.vl-tot-it",
-          "description": "Valor total do item de pedido"
-        },
-        "totalPercentageDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-pct-desconto-total",
-          "description": "Percentual de desconto total do item do pedido"
-        },
-        "totalValueDiscount": {
-          "type": "number",
-          "example": "movdis.ped-item.val-desconto-total",
-          "description": "Valor do desconto total"
-        },
-        "transactionType": {
-          "type": "string",
-          "example": "movdis.ped-item.nat-operacao",
-          "description": "Natureza de operação"
-        },
-        "typeAttendance": {
+        "warehouseType": {
           "type": "integer",
-          "example": "movdis.ped-item.tipo-atend",
-          "description": "Tipo de atendimento"
+          "example": "deposito.ind-tipo-dep",
+          "description": "Tipo de Depósito"
         },
-        "unitBusinessCod": {
-          "type": "string",
-          "example": "movdis.ped-item.cod-unid-negoc",
-          "description": "Código Unidade Negócio"
-        },
-        "unitMeasureBilling": {
-          "type": "string",
-          "example": "movdis.ped-item.des-un-medida",
-          "description": "Unidade de medida do item do pedido."
-        },
-        "unitMeasureBillingDesc": {
-          "type": "string",
-          "example": "mgind.tab-unidade.descricao",
-          "description": "Unidade de Medida de Faturamento"
-        },
-        "unitMeasureStock": {
-          "type": "string",
-          "example": "movdis.ped-item.char-2,09,02",
-          "description": "Unidade de Medida de estoque"
-        },
-        "unitMeasureStockDesc": {
-          "type": "string",
-          "example": "mgind.tab-unidade.descricao",
-          "description": "Descrição Unidade de Medida de estoque"
+        "wmsWarehouse": {
+          "type": "boolean",
+          "example": "deposito.log-gera-wms",
+          "description": "Indicar se o depósito é de WMS ou não"
         }
       }
     }
